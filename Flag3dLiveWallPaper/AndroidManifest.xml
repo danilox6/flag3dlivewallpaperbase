@@ -28,6 +28,10 @@
             android:label="@string/strSettings"
              >
         </activity>
+        <activity
+            android:name=".settings.GalleryView"
+            android:label="@string/strSelectPic">
+        </activity>
     </application>
 
 </manifest>

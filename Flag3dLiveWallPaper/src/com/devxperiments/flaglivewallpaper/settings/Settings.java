@@ -4,6 +4,7 @@ package com.devxperiments.flaglivewallpaper.settings;
 import com.devxperiments.flaglivewallpaper.R;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -22,6 +23,7 @@ public class Settings extends PreferenceActivity implements SharedPreferences.On
 	
 	
 	private Preference colorPickerDialog;
+	private Preference flagImagePicker;
 	
     @Override
     protected void onCreate(Bundle icicle) {
@@ -31,7 +33,9 @@ public class Settings extends PreferenceActivity implements SharedPreferences.On
         addPreferencesFromResource(R.xml.settings);
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         
-       	colorPickerDialog = findPreference(BACKGROUND_COLOR);
+        flagImagePicker = findPreference(FLAG_IMAGE);
+        flagImagePicker.setOnPreferenceClickListener(this);
+        colorPickerDialog = findPreference(BACKGROUND_COLOR);
        	colorPickerDialog.setOnPreferenceClickListener(this);
     }
 
@@ -53,7 +57,7 @@ public class Settings extends PreferenceActivity implements SharedPreferences.On
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Settings.this);
-		
+		Log.w(FLAG_IMAGE, "settings");
 		String key = preference.getKey();
 		if (key.equals(BACKGROUND_COLOR)) {
 
@@ -81,6 +85,13 @@ public class Settings extends PreferenceActivity implements SharedPreferences.On
 
 			d.show();
 
+			return true;
+		}
+		if(key.equals(FLAG_IMAGE)){
+			Log.w(FLAG_IMAGE, "flag");
+			Intent intent = new Intent(this, GalleryView.class);
+			startActivity(intent);
+			
 			return true;
 		}
 		return false;

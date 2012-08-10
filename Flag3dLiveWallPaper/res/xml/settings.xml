@@ -8,6 +8,12 @@
         android:summary="Imposta lo zoom"
         android:text=" %"
         android:title="Zoom" />
+    
+     <Preference
+        android:key="flag"
+        android:summary="Seleziona la bandiera"
+        android:title="Immagine bandiera" >
+    </Preference>
 
     <Preference
         android:key="background"

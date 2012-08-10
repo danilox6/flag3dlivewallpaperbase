@@ -1,6 +1,5 @@
 package com.devxperiments.flaglivewallpaper;
 
-import java.lang.reflect.Field;
 import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -13,7 +12,6 @@ import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -23,14 +21,11 @@ import com.jbrush.ae.EditorObject;
 import com.jbrush.ae.LightData;
 import com.jbrush.ae.Scene;
 import com.threed.jpct.Camera;
-import com.threed.jpct.Config;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
-import com.threed.jpct.Logger;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
-import com.threed.jpct.TextureManager;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
@@ -89,7 +84,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 	public void onDrawFrame(GL10 gl) {
 		
 		fb.clear();
-		fb.blit(TextureManager.getInstance().getTexture("flagt"),0,0,0,0,512,1024,FrameBuffer.OPAQUE_BLITTING);
+//		fb.blit(TextureManager.getInstance().getTexture("flagt"),0,0,0,0,512,1024,FrameBuffer.OPAQUE_BLITTING);
 		
 		world.renderScene(fb);
 		
@@ -123,18 +118,18 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		// TODO Auto-generated method stub
 	}
 	
-	private void copy(Object src) {
-		try {
-			Logger.log("Copying data from master Activity!");
-			Field[] fs = src.getClass().getDeclaredFields();
-			for (Field f : fs) {
-				f.setAccessible(true);
-				f.set(this, f.get(src));
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+//	private void copy(Object src) {
+//		try {
+//			Logger.log("Copying data from master Activity!");
+//			Field[] fs = src.getClass().getDeclaredFields();
+//			for (Field f : fs) {
+//				f.setAccessible(true);
+//				f.set(this, f.get(src));
+//			}
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
@@ -147,8 +142,6 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		
 		world = new World();
-	
-		
 		
 		lights = new Vector<LightData>();
 		
@@ -163,8 +156,6 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
         
 		
         Object3D flag = Scene.findObject("flagh0", objects);
-//        flag.scale(30);
-//        flag.getMesh().
         
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -175,48 +166,29 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
         screenHeight =  metrics.heightPixels;
         screenWidth =   metrics.widthPixels;
         
-        
-//        Object3D o1 = Object3D.createDummyObj();
-//        o1.align(flag);
-//        o1.translate(height/2, 0, 0);
-        
-//        while( flag.rayIntersectsAABB(new SimpleVector(screenWidth/2, screenHeight/2, 0), new SimpleVector(1, 0, 0)) == Object3D.RAY_MISSES_BOX)
-//        	flag.scale(5);	
-        
-//        flag.translate(0, 0, 0);
-//        flag.scale(15);
-        
         Animator.Play(flag, "wave", objects);
        
-        
-		flag.setTexture("flagt");
+        String texture = prefs.getString(Settings.FLAG_IMAGE, FlagManager.getDefaultFlag());
+        if (screenWidth > screenHeight)
+        	texture = FlagManager.toLandscape(texture);
+        else
+        	texture = FlagManager.toPortrait(texture);
+		flag.setTexture(texture);
 		
 		float[] bb = flag.getMesh().getBoundingBox();
 		
-		float height = Math.abs(bb[2]-bb[3]);
+//		float height = Math.abs(bb[2]-bb[3]);
 		float width = Math.abs(bb[0]-bb[1]);
 		
 		sun = new Light(world);
-//		sun.setIntensity(Color.red(color), Color.green(color), Color.blue(color) );
-		
-		
-//		float xFOV = width/2;
-//		float yFOV = (float) (2.0f * Math.atan( Math.tan(xFOV * 0.5f) * height/width ));
-		
-//		Config.autoMaintainAspectRatio = false;
 		
 		float moveout = 35; 
 		Camera cam = world.getCamera();
+		cam.setPositionToCenter(flag);
 		cam.moveCamera(Camera.CAMERA_MOVEOUT, moveout);
 		cam.setFOV(cam.convertRADAngleIntoFOV((float) Math.atan(width/(2*moveout))));
 //		cam.setYFOV(cam.convertRADAngleIntoFOV((float) Math.atan(height/(2*moveout))));
 		cam.lookAt(flag.getTransformedCenter());
-		
-//		flag.align(cam);
-		
-	float fov =	cam.getFOV();
-		float tfov = cam.getYFOV();
-		
 		
 		SimpleVector sv = new SimpleVector();
 		sv.set(flag.getTransformedCenter());
@@ -225,8 +197,6 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		sv.z -= 5;
 		sun.setPosition(sv);
 //		sun.disable();
-		
-	
 		
 		MemoryHelper.compact();
 	}

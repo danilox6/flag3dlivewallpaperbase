@@ -4,4 +4,5 @@
     <string name="service_label">Flag Live WallPaper</string>
     <string name="description">Il Live WallPaper della tua squadra del Cuore</string>
     <string name="strSettings">Impostazioni</string>
+    <string name="strSelectPic">Seleziona una bandiera</string>
 </resources>
