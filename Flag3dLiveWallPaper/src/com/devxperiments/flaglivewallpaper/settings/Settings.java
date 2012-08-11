@@ -18,8 +18,10 @@ public class Settings extends PreferenceActivity implements SharedPreferences.On
 	public static final String CAMERA_ZOOM = "zoom";
 	public static final String BACKGROUND_COLOR = "background";
 	public static final String AMBIENT_LIGHT = "light";
+	public static final String ORIENTATION = "orientation";
 	public static final String FLAG_IMAGE = "flag";
 	public static final String PREFS_NAME = "setting";
+	
 	
 	
 	private Preference colorPickerDialog;

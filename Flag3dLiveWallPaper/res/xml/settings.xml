@@ -21,4 +21,13 @@
         android:title="Colore sfondo" >
     </Preference>
     
+    <ListPreference 
+        android:title="Orientation"
+        android:key="orientation"
+        android:entries="@array/pref_orientation_entries"
+        android:entryValues="@array/pref_orientation_values"
+        android:summary="Orientamento dello sfondo"
+        android:defaultValue="auto"
+        />
+    
  </PreferenceScreen>

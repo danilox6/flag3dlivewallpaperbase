@@ -1,15 +1,14 @@
 package com.devxperiments.flaglivewallpaper;
 
-
 import android.content.Context;
 import android.view.SurfaceHolder;
 import net.rbgrn.android.glwallpaperservice.*;
-
 
 // Original code provided by Robert Green
 // http://www.rbgrn.net/content/354-glsurfaceview-adapted-3d-live-wallpapers
 public class FlagWallpaperService extends GLWallpaperService {
 	Context context;
+	
 	public FlagWallpaperService() {
 		super();
 		 context = this;
@@ -22,10 +21,10 @@ public class FlagWallpaperService extends GLWallpaperService {
 		return engine;
 	}
 	
-
-
 	class MyEngine extends GLEngine {
 		FlagRenderer renderer;
+		
+		
 		public MyEngine() {
 			super();
 			// handle prefs, other initialization
@@ -40,13 +39,15 @@ public class FlagWallpaperService extends GLWallpaperService {
 			FlagRenderer.setInstance(null);
 			renderer = FlagRenderer.getInstance(context);
 			setRenderer(renderer);
-			setRenderMode(RENDERMODE_CONTINUOUSLY); 	
+			setRenderMode(RENDERMODE_CONTINUOUSLY);
+//			getApplication().get;
 		}
-
+		
+		
 		@Override
-		public void onSurfaceChanged(SurfaceHolder holder, int format, 	int width, int height) {
+		public void onSurfaceChanged(SurfaceHolder holder, int format,	int width, int height) {
 //			renderer.draw(width, height);
-			super.onSurfaceChanged(holder, format, width, height);
+				super.onSurfaceChanged(holder, format, width, height);
 		}
 		
 		public void onDestroy() {
