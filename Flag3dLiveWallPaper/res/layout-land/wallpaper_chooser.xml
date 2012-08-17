@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
     <LinearLayout
@@ -11,20 +11,39 @@
         android:orientation="vertical" >
 
         <Gallery
-            android:id="@+id/Gallery01"
+            android:id="@+id/gallery"
             android:layout_width="fill_parent"
             android:layout_height="0.0dp"
             android:layout_weight="0.3" >
         </Gallery>
 
-        <ImageView
-            android:id="@+id/imgFlag"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="0.0dp"
             android:layout_weight="0.7"
-            android:scaleType="centerCrop"
-             >
-        </ImageView>
+            android:orientation="horizontal" >
+
+            <View
+                android:layout_width="0.0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.2" />
+
+            <ImageView
+                android:id="@+id/imgFlag"
+                android:layout_width="0.0dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.9"
+                android:scaleType="centerCrop"
+                android:src="@drawable/resolution"
+                 >
+            </ImageView>
+
+            <View
+                android:layout_width="0.0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.2" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

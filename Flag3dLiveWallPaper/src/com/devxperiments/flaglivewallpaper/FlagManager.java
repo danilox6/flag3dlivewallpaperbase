@@ -1,7 +1,9 @@
 package com.devxperiments.flaglivewallpaper;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import android.content.Context;
 
@@ -13,13 +15,16 @@ public class FlagManager {
 	private static HashMap<String, Integer> flagIds = new HashMap<String, Integer>();
 	private static String defaultFlag = null;
 	
+	public static final String LANDSCAPE = "_landscape";
+	public static final String DEFAULT = "default_";
+	
 	@SuppressWarnings("rawtypes")
 	public static void inizialize(Context context){
 		Class resources = R.drawable.class;
 		Field[] fields = resources.getFields();
 		for (Field field: fields ) {
 			if(!field.getName().equals("ic_launcher")){
-				if(field.getName().startsWith("default_"))
+				if(field.getName().startsWith(DEFAULT))
 					defaultFlag = field.getName();
 				Integer id = flagIds.get(field.getName());
 				if (id == null){
@@ -35,31 +40,41 @@ public class FlagManager {
 	public static int getFlagId(String flagName){
 		return flagIds.get(flagName);
 	}
-	
+
 	public static String toPortrait(String flagName){
-		if(flagName.endsWith("_landscape"))
-			return flagName.substring(0, flagName.indexOf("_landscape"));
+		if(flagName.endsWith(LANDSCAPE))
+			return flagName.substring(0, flagName.indexOf(LANDSCAPE));
 		return flagName;
 	}
 	
+	public static int toPortrait(int flagId){
+		String flag = getFlagNameById(flagId);
+		return flagIds.get(toPortrait(flag));
+	}
+	
 	public static String toLandscape(String flagName){
-		if(!flagName.endsWith("_landscape"))
-			if (flagIds.containsKey(flagName + "_landscape"))
-				return flagName + "_landscape";
+		if(!flagName.endsWith(LANDSCAPE))
+			if (flagIds.containsKey(flagName + LANDSCAPE))
+				return flagName + LANDSCAPE;
 		return flagName;
+	}
+	
+	public static int toLandscape(int flagId){
+		String flag = getFlagNameById(flagId);
+		return flagIds.get(toLandscape(flag));
 	}
 	
 	public static String getDefaultFlag(){
 		return defaultFlag;
 	}
 	
-	public static Integer[] getFlagIds(){
-		Integer[] ids = new Integer[flagIds.size()];
-		int i = 0;
-		for(Integer id: flagIds.values()){
-			ids[i++] = id;
+	public static List<Integer> getPortraitFlagIds(){
+		List<Integer> portraitIds = new ArrayList<Integer>();
+		for(String flagName: flagIds.keySet()){
+			if(!flagName.endsWith(LANDSCAPE))
+				portraitIds.add(flagIds.get(flagName));
 		}
-		return ids;
+		return portraitIds;
 	}
 	
 	public static String getFlagNameById(int id){

@@ -8,34 +8,24 @@
 
     <application
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-         >
+        android:label="@string/app_name" >
         <service
             android:name=".FlagWallpaperService"
             android:label="@string/service_label"
-            android:permission="android.permission.BIND_WALLPAPER"
-            
-            >
+            android:permission="android.permission.BIND_WALLPAPER" >
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
             </intent-filter>
 
             <meta-data
                 android:name="android.service.wallpaper"
-                android:resource="@xml/myglwallpaper"
-                 />
+                android:resource="@xml/myglwallpaper" />
         </service>
 
         <activity
-            android:name=".settings.Settings"
+            android:name=".WallpaperChooser"
             android:exported="true"
-            android:label="@string/strSettings"
-             >
-        </activity>
-        <activity
-            android:name=".settings.GalleryView"
-            android:exported="true"
-            android:label="@string/strSelectPic">
+            android:label="@string/strSelectPic" >
         </activity>
     </application>
 

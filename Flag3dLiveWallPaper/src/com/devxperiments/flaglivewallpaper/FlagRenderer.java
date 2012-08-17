@@ -14,7 +14,6 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.devxperiments.flaglivewallpaper.settings.Settings;
 import com.jbrush.ae.Animator;
 import com.jbrush.ae.EditorObject;
 import com.jbrush.ae.LightData;
@@ -31,12 +30,10 @@ import net.rbgrn.android.glwallpaperservice.GLWallpaperService;
 
 public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPreferenceChangeListener{
  
-	private FrameBuffer fb;
+	private FrameBuffer framebuffer;
 	private World world;
-//	private RGBColor backgroundColor = RGBColor.BLACK;
 	private Vector<EditorObject> objects;
 	private Vector<LightData> lights; 
-//	private Context master;
 	private Context context;
 	
 	private boolean preference = false;
@@ -64,12 +61,6 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		prefs.registerOnSharedPreferenceChangeListener(this);
-		
-//		int color = prefs.getInt(Settings.BACKGROUND_COLOR, 0xff000000);
-//		backgroundColor = new RGBColor(Color.red(color), Color.green(color), Color.blue(color));
-//		 if (master != null) {
-//				copy(master);
-//		}
 	}
 	
 	@Override
@@ -77,64 +68,33 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
-		fb.clear();
-		world.renderScene(fb);
+		framebuffer.clear();
+		world.renderScene(framebuffer);
 		Animator.EnableAnimations();
-		world.draw(fb);
-		fb.display();
+		world.draw(framebuffer);
+		framebuffer.display();
 	}
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
-		if (fb != null) {
-			fb.dispose();
+		if (framebuffer != null) {
+			framebuffer.dispose();
 		}
 		
-		fb = new FrameBuffer(gl, width, height);
+		framebuffer = new FrameBuffer(gl, width, height);
 		if(world==null || preference){
 			preference = false;
 			draw(width, height);
 		}
 		
-		
-		
-//		String orientationPref = PreferenceManager.getDefaultSharedPreferences(context).getString(Settings.ORIENTATION, "auto");
-//		if(!orientationPref.equals("auto") &&( 
-//				!(orientationPref.equals("landscape") && width > height) ||
-//				!(orientationPref.equals("portrait") && height > width))){
-//				adjustCamera(orientationPref.equals("landscape"));
-//		}
-			
-//		if (master == null) {
-
-				
-//			if (master == null) {
-//				Logger.log("Saving master Activity!");
-//				master = context;
-//			}
-//		}
-
 	}
 
 	public void release() {
-		if (fb != null) {
-			fb.dispose();
+		if (framebuffer != null) {
+			framebuffer.dispose();
 		}
 	}
 	
-//	private void copy(Object src) {
-//		try {
-//			Logger.log("Copying data from master Activity!");
-//			Field[] fs = src.getClass().getDeclaredFields();
-//			for (Field f : fs) {
-//				f.setAccessible(true);
-//				f.set(this, f.get(src));
-//			}
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
-
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 		preference = true;
@@ -148,23 +108,14 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		
 		lights = new Vector<LightData>();
 		
-//		int color = prefs.getInt(Settings.BACKGROUND_COLOR, 0xff000000);
-//		backgroundColor = new RGBColor(Color.red(color), Color.green(color), Color.blue(color));
-        
-//		world.setAmbientLight(Color.red(color), Color.green(color), Color.blue(color));
-		
 		AssetManager assetManager = context.getAssets();
 		objects = Scene.loadSerializedLevel("flagh.txt", objects, lights, null,null, world, assetManager);
-//		objects = Scene.loadSerializedLevel("flagh.txt", objects, world, assetManager);
-        
 		
         Object3D flag = Scene.findObject("flagh0", objects);
-        
         
         if(screenHeight == 0 && screenWidth == 0){
         	WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         	
-
         	Display display = wm.getDefaultDisplay();
         	DisplayMetrics metrics = new DisplayMetrics();
         	display.getMetrics(metrics);
@@ -174,7 +125,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
         }
         Animator.Play(flag, "wave", objects);
        
-        String texture = prefs.getString(Settings.FLAG_IMAGE, FlagManager.getDefaultFlag());
+        String texture = prefs.getString(WallpaperChooser.FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
         if (screenWidth > screenHeight)
         	texture = FlagManager.toLandscape(texture);
         else
@@ -208,39 +159,8 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		MemoryHelper.compact();
 	}
 	
-
-	
 	public Context getContext() {
 		return context;
 	}
 
-//	class FrameBuffer extends com.threed.jpct.FrameBuffer{
-//		
-//		
-//		private static final long serialVersionUID = 1L;
-//		private GL10 glContext;
-//		private int width, heigh;
-//		
-//		
-//		public FrameBuffer(GL10 glContext, int width, int height) {
-//			super(glContext, width, height);
-//			this.glContext = glContext;
-//			this.width = width;
-//			this.heigh = height;
-//		}
-//
-//		public GL10 getGlContext() {
-//			return glContext;
-//		}
-//
-//		public int getWidth() {
-//			return width;
-//		}
-//
-//		public int getHeigh() {
-//			return heigh;
-//		}
-//		
-//	}
-	
 }

@@ -1,11 +1,13 @@
-package com.devxperiments.flaglivewallpaper.settings;
+package com.devxperiments.flaglivewallpaper;
 
-import com.devxperiments.flaglivewallpaper.FlagManager;
+import java.util.List;
+
 import com.devxperiments.flaglivewallpaper.R;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +16,7 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -24,28 +27,31 @@ import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
 
-public class GalleryView extends Activity implements OnClickListener{
-    Integer[] flags;
-    ImageView imageView;
-    Button btnOk, btnCancel;
-    SharedPreferences prefs;
+public class WallpaperChooser extends Activity implements OnClickListener{
+    private List<Integer> flags;
+    private ImageView imageView;
+    private Button btnOk, btnCancel;
+    private SharedPreferences prefs;
+    private int heigth;
+    
+    public static final String FLAG_IMAGE_SETTING = "flag";
     
 	/** Called when the activity is first created. */
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        flags = FlagManager.getFlagIds();
+        flags = FlagManager.getPortraitFlagIds();
         
-        setContentView(R.layout.gallery);
+        setContentView(R.layout.wallpaper_chooser);
         
-        Gallery gallery = (Gallery) findViewById(R.id.Gallery01);
+        Gallery gallery = (Gallery) findViewById(R.id.gallery);
         gallery.setAdapter(new ImageAdapter(this));
         
         imageView = (ImageView)findViewById(R.id.imgFlag);
         
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String texture = prefs.getString(Settings.FLAG_IMAGE, FlagManager.getDefaultFlag());
+        String texture = prefs.getString(FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
         imageView.setImageResource(FlagManager.getFlagId(texture));
         imageView.setTag(FlagManager.getFlagId(texture));
         
@@ -53,8 +59,14 @@ public class GalleryView extends Activity implements OnClickListener{
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,	long arg3) {
-				imageView.setImageResource(flags[position]);
-				imageView.setTag(flags[position]);
+				
+				int flagId = flags.get(position);
+				
+				if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+					flagId = FlagManager.toLandscape(flagId);
+				
+				imageView.setImageResource(flagId);
+				imageView.setTag(flags.get(position));
 			}
         	
         });
@@ -64,9 +76,10 @@ public class GalleryView extends Activity implements OnClickListener{
         btnCancel = (Button) findViewById(R.id.btnCancel);
         btnCancel.setOnClickListener(this);
         
+        Display display = getWindowManager().getDefaultDisplay();
+        heigth = display.getHeight();
         
     }
-    
     
     public class ImageAdapter extends BaseAdapter {
 
@@ -75,14 +88,14 @@ public class GalleryView extends Activity implements OnClickListener{
     	
     	public ImageAdapter(Context c) {
 			ctx = c;
-			TypedArray array = obtainStyledAttributes(R.styleable.Gallery1);
-			imageBackground = array.getResourceId(R.styleable.Gallery1_android_galleryItemBackground, 1);
+			TypedArray array = obtainStyledAttributes(R.styleable.GalleryStyle);
+			imageBackground = array.getResourceId(R.styleable.GalleryStyle_android_galleryItemBackground, 1);
 			array.recycle();
 		}
 
 		@Override
     	public int getCount() {
-    		return flags.length;
+    		return flags.size();
     	}
 
 		@Override
@@ -95,15 +108,12 @@ public class GalleryView extends Activity implements OnClickListener{
 			return position;
 		}
 		
-		
-		//FIXME dimensioni assolute
     	@Override
     	public View getView(int position, View convertView, ViewGroup parent) {
     		ImageView imageView = new ImageView(ctx);
-//    		imageView.setImageResource(flags[position]);
-//    		imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-    		imageView.setImageBitmap(scaleCenterCrop(BitmapFactory.decodeResource(getResources(), flags[position]),120,150));
-    		imageView.setLayoutParams(new Gallery.LayoutParams(150,120));
+    		int s = (heigth*30/100) - 5;
+    		imageView.setImageBitmap(scaleCenterCrop(BitmapFactory.decodeResource(getResources(), flags.get(position)),s,s));
+    		imageView.setAdjustViewBounds(true);
     		imageView.setBackgroundResource(imageBackground);
     		return imageView;
     	}
@@ -140,9 +150,7 @@ public class GalleryView extends Activity implements OnClickListener{
 
     	    return dest;
     	}
-
     }
-
 
 	@Override
 	public void onClick(View v) {
@@ -150,7 +158,7 @@ public class GalleryView extends Activity implements OnClickListener{
 			
 			String texture = FlagManager.getFlagNameById((Integer) imageView.getTag());
 			Log.w("AAA", texture);
-			prefs.edit().putString(Settings.FLAG_IMAGE, texture).commit();
+			prefs.edit().putString(FLAG_IMAGE_SETTING, texture).commit();
 		}
 		finish();
 	}
