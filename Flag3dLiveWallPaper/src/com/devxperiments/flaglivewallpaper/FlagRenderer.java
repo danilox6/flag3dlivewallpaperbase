@@ -35,6 +35,8 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 	private Vector<EditorObject> objects;
 	private Vector<LightData> lights; 
 	private Context context;
+	private Object3D flag;
+	SharedPreferences prefs;
 	
 	private boolean preference = false;
 	
@@ -59,7 +61,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 	private FlagRenderer(Context context) {
 		this.context = context;
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		prefs.registerOnSharedPreferenceChangeListener(this);
 	}
 	
@@ -86,7 +88,13 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 			preference = false;
 			draw(width, height);
 		}
-		
+
+		String texture = prefs.getString(WallpaperChooser.FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
+		if (width > height)
+			texture = FlagManager.toLandscape(texture);
+		else
+			texture = FlagManager.toPortrait(texture);
+		flag.setTexture(texture);
 	}
 
 	public void release() {
@@ -102,7 +110,6 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 
 	private void draw(int screenWidth, int screenHeight){
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		
 		world = new World();
 		
@@ -111,7 +118,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		AssetManager assetManager = context.getAssets();
 		objects = Scene.loadSerializedLevel("flag.txt", objects, lights, null,null, world, assetManager);
 		
-        Object3D flag = Scene.findObject("flag0", objects);
+        flag = Scene.findObject("flag0", objects);
         
         if(screenHeight == 0 && screenWidth == 0){
         	WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

@@ -34,9 +34,8 @@
                 android:layout_height="fill_parent"
                 android:layout_above="@+id/lin"
                 android:layout_gravity="center_horizontal"
-                android:scaleType="centerCrop"
-                android:src="@drawable/resolution"
-                android:contentDescription="@string/strWallpaperImage" >
+                android:contentDescription="@string/strWallpaperImage"
+                android:scaleType="centerCrop" >
             </ImageView>
 
             <LinearLayout

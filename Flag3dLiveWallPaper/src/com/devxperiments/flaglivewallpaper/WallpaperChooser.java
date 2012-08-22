@@ -15,7 +15,6 @@ import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,6 +32,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
     private Button btnOk, btnCancel;
     private SharedPreferences prefs;
     private int heigth;
+    private static String selectedTexture;
     
     public static final String FLAG_IMAGE_SETTING = "flag";
     
@@ -51,7 +51,12 @@ public class WallpaperChooser extends Activity implements OnClickListener{
         imageView = (ImageView)findViewById(R.id.imgFlag);
         
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String texture = prefs.getString(FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
+        
+        if(selectedTexture == null)
+        	selectedTexture = prefs.getString(FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
+        String texture = selectedTexture;
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        	texture = FlagManager.toLandscape(texture);
         imageView.setImageResource(FlagManager.getFlagId(texture));
         imageView.setTag(FlagManager.getFlagId(texture));
         
@@ -61,6 +66,8 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				
 				int flagId = flags.get(position);
+				
+				selectedTexture = FlagManager.getFlagNameById(flagId);
 				
 				if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
 					flagId = FlagManager.toLandscape(flagId);
@@ -155,9 +162,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		if(((Button) v).equals(btnOk)){
-			
 			String texture = FlagManager.getFlagNameById((Integer) imageView.getTag());
-			Log.w("AAA", texture);
 			prefs.edit().putString(FLAG_IMAGE_SETTING, texture).commit();
 		}
 		finish();

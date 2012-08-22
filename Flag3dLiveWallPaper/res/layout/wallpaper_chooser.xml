@@ -26,8 +26,7 @@
             android:layout_weight="0.7"
             android:contentDescription="@string/strWallpaperImage"
             android:padding="5dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/resolution" >
+            android:scaleType="centerCrop" >
         </ImageView>
     </LinearLayout>
 
