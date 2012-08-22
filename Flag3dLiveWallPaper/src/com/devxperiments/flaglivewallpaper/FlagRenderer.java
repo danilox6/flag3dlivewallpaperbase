@@ -107,11 +107,11 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		world = new World();
 		
 		lights = new Vector<LightData>();
-		
+		 
 		AssetManager assetManager = context.getAssets();
-		objects = Scene.loadSerializedLevel("flagh.txt", objects, lights, null,null, world, assetManager);
+		objects = Scene.loadSerializedLevel("flag.txt", objects, lights, null,null, world, assetManager);
 		
-        Object3D flag = Scene.findObject("flagh0", objects);
+        Object3D flag = Scene.findObject("flag0", objects);
         
         if(screenHeight == 0 && screenWidth == 0){
         	WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -139,7 +139,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 //		float height = Math.abs(bb[2]-bb[3]);
 		float width = Math.abs(bb[0]-bb[1]);
 
-		float moveout = 35; 
+		float moveout = 30; 
 		Camera cam = world.getCamera();
 		cam.setPositionToCenter(flag);
 		cam.moveCamera(Camera.CAMERA_MOVEOUT, moveout);
@@ -152,7 +152,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		sv.set(flag.getTransformedCenter());
 		sv.y += 100;
 		sv.x -= 100;
-		sv.z -= 5;
+		sv.z -= 30;
 		sun.setPosition(sv);
 //		sun.disable();
 		

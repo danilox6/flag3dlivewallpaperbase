@@ -1,4 +1,0 @@
-fp-flagh0.3ds on-flagh0 rx--1.5999995 ry-0.0 rz-0.0 tx-0.0 ty-0.0 tz-0.0 oc-0 cx-0 cz-0.0 cc-true sl-false ot--1 bm-null pa-null ak-10 sn-wave sp-0.017640004 sf-flagh0.3ds sf-flagh1.3ds sf-flagh2.3ds sf-flagh3.3ds sf-flagh4.3ds sf-flagh5.3ds sf-flagh6.3ds sf-flagh7.3ds sf-flagh8.3ds sf-flagh9.3ds ac-0 ai-0 as-0 os-1.0 st-0 sh-1 
-px--11.0 py-11.0 pz--3.0 ix-80.0 iy-80.0 iz-80.0 la-800.0 dn-PointLight dd--2.0
-px--9.0 py--12.0 pz-0.0 ix-80.0 iy-80.0 iz-80.0 la-800.0 dn-PointLight dd--2.0
-px-0.0 py-0.0 pz--10.0 ix-80.0 iy-80.0 iz-80.0 la-800.0 dn-PointLight dd--2.0
