@@ -5,7 +5,7 @@ import android.view.SurfaceHolder;
 import net.rbgrn.android.glwallpaperservice.*;
 
 public class FlagWallpaperService extends GLWallpaperService {
-	Context context;
+	static Context context;
 	
 	public FlagWallpaperService() {
 		super();
@@ -24,10 +24,9 @@ public class FlagWallpaperService extends GLWallpaperService {
 		public MyEngine() {
 			super();
 			
-			FlagManager.inizialize(context);
+//			FlagManager.inizialize();
 			
-			FlagRenderer.setInstance(null);
-			renderer = FlagRenderer.getInstance(context);
+			renderer = new FlagRenderer();
 			setRenderer(renderer);
 			setRenderMode(RENDERMODE_CONTINUOUSLY);
 		}
@@ -41,6 +40,7 @@ public class FlagWallpaperService extends GLWallpaperService {
 			super.onDestroy();
 			if (renderer != null) {
 				renderer.release();
+				FlagManager.release();
 			}
 			renderer = null;
 		}

@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Gallery;
@@ -29,9 +29,10 @@ import android.widget.ImageView;
 public class WallpaperChooser extends Activity implements OnClickListener{
     private List<Integer> flags;
     private ImageView imageView;
-    private Button btnOk, btnCancel;
+    private Button btnOk;
     private SharedPreferences prefs;
     private int heigth;
+    private Bitmap[] thumbCache;
     private static String selectedTexture;
     
     public static final String FLAG_IMAGE_SETTING = "flag";
@@ -46,7 +47,28 @@ public class WallpaperChooser extends Activity implements OnClickListener{
         setContentView(R.layout.wallpaper_chooser);
         
         Gallery gallery = (Gallery) findViewById(R.id.gallery);
-        gallery.setAdapter(new ImageAdapter(this));
+        gallery.setAdapter(new FlagAdapter(this));
+        gallery.setCallbackDuringFling(false);
+
+        gallery.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+        	@Override
+        	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        		int flagId = flags.get(position);
+
+        		selectedTexture = FlagManager.getFlagNameById(flagId);
+
+        		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        			flagId = FlagManager.toLandscape(flagId);
+
+				imageView.setImageResource(flagId);
+				imageView.setTag(flags.get(position));
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {}
+		});
+
         
         imageView = (ImageView)findViewById(R.id.imgFlag);
         
@@ -60,41 +82,23 @@ public class WallpaperChooser extends Activity implements OnClickListener{
         imageView.setImageResource(FlagManager.getFlagId(texture));
         imageView.setTag(FlagManager.getFlagId(texture));
         
-        gallery.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				
-				int flagId = flags.get(position);
-				
-				selectedTexture = FlagManager.getFlagNameById(flagId);
-				
-				if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-					flagId = FlagManager.toLandscape(flagId);
-				
-				imageView.setImageResource(flagId);
-				imageView.setTag(flags.get(position));
-			}
-        	
-        });
-        
         btnOk = (Button) findViewById(R.id.btnOk);
         btnOk.setOnClickListener(this);
-        btnCancel = (Button) findViewById(R.id.btnCancel);
-        btnCancel.setOnClickListener(this);
+        ((Button) findViewById(R.id.btnCancel)).setOnClickListener(this);
         
         Display display = getWindowManager().getDefaultDisplay();
         heigth = display.getHeight();
         
     }
     
-    public class ImageAdapter extends BaseAdapter {
+    public class FlagAdapter extends BaseAdapter {
 
-    	private Context ctx;
+    	private Context context;
     	int imageBackground;
     	
-    	public ImageAdapter(Context c) {
-			ctx = c;
+    	public FlagAdapter(Context c) {
+    		thumbCache = new Bitmap[flags.size()];
+			context = c;
 			TypedArray array = obtainStyledAttributes(R.styleable.GalleryStyle);
 			imageBackground = array.getResourceId(R.styleable.GalleryStyle_android_galleryItemBackground, 1);
 			array.recycle();
@@ -117,9 +121,17 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 		
     	@Override
     	public View getView(int position, View convertView, ViewGroup parent) {
-    		ImageView imageView = new ImageView(ctx);
-    		int s = (heigth*30/100) - 5;
-    		imageView.setImageBitmap(scaleCenterCrop(BitmapFactory.decodeResource(getResources(), flags.get(position)),s,s));
+    		ImageView imageView;
+    		if(convertView == null)
+    			imageView = new ImageView(context);
+    		else
+    			imageView = (ImageView) convertView;
+    		
+    		if (thumbCache[position] == null){
+    			int scaledHeight = (heigth*30/100) - 5;
+    			thumbCache[position] = scaleCenterCrop(BitmapFactory.decodeResource(getResources(), flags.get(position)),scaledHeight,scaledHeight);
+    		}
+    		imageView.setImageBitmap(thumbCache[position]);
     		imageView.setAdjustViewBounds(true);
     		imageView.setBackgroundResource(imageBackground);
     		return imageView;
@@ -157,6 +169,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 
     	    return dest;
     	}
+    	
     }
 
 	@Override
@@ -164,7 +177,9 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 		if(((Button) v).equals(btnOk)){
 			String texture = FlagManager.getFlagNameById((Integer) imageView.getTag());
 			prefs.edit().putString(FLAG_IMAGE_SETTING, texture).commit();
-		}
+		}else
+			FlagManager.release();
+		selectedTexture = null;
 		finish();
 	}
 }
