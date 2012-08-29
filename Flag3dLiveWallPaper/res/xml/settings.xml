@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Immagine Bandiera" >
+        <ListPreference
+            android:defaultValue="single_flag"
+            android:entries="@array/pref_flag_type_entries"
+            android:entryValues="@array/pref_flag_type_values"
+            android:key="flag_image_setting"
+            android:summary="Scegli tra singola o multi"
+            android:title="Tipo Immagine" />
+
+        <Preference
+            android:key="single_flag"
+            android:title="@string/strSelectPic" />
+
+        <EditTextPreference
+            android:dialogMessage="Scegli tra secondi o minuti"
+            android:dialogTitle="Tempo Aggiornamento"
+            android:key="multi_flag_time"
+            android:summary="Tempo tra un cambio e un altro"
+            android:title="Tempo Aggiornamento" />
+    </PreferenceCategory>
     
-	<Preference
-	    android:key="flag"
-	    android:title="@string/strSelectPic"
-	    
-	 />
-	
-	<Preference
-	    android:key="feedback"
-	    android:title="Feedback"
-	 />
-	
-	<Preference
-	    android:key="credits"
-	    android:title="@string/strCredits"
-	 />
-    
+    <PreferenceCategory android:title="Feedback e Crediti" >
+        <Preference
+            android:key="feedback"
+            android:title="Feedback" />
+        <Preference
+            android:key="credits"
+            android:title="@string/strCredits" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

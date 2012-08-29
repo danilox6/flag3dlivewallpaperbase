@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<declare-styleable name="GalleryStyle">
-		<attr name="android:galleryItemBackground"/>
-	</declare-styleable>
+
+    <declare-styleable name="GalleryStyle">
+        <attr name="android:galleryItemBackground" />
+    </declare-styleable>
+
+    <string-array name="pref_flag_type_entries">
+        <item>Single</item>
+        <item>Multiple</item>
+    </string-array>
+    <string-array name="pref_flag_type_values">
+        <item>single_flag</item>
+        <item>multi_flag</item>
+    </string-array>
+
 </resources>

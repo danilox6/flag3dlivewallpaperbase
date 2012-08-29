@@ -24,8 +24,6 @@ public class FlagWallpaperService extends GLWallpaperService {
 		public MyEngine() {
 			super();
 			
-//			FlagManager.inizialize();
-			
 			renderer = new FlagRenderer();
 			setRenderer(renderer);
 			setRenderMode(RENDERMODE_CONTINUOUSLY);

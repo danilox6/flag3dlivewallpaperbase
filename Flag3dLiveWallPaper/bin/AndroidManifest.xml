@@ -26,8 +26,7 @@
         <activity
             android:name=".settings.Settings"
             android:exported="true"
-            android:label="Setting"
-            android:theme="@android:style/Theme.Light" >
+            android:label="Setting" >
         </activity>
         <activity
             android:name=".settings.WallpaperChooser"

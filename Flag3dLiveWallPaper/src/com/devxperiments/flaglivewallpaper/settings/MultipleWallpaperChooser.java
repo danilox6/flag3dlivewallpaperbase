@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class MultipleWallpaperChooser extends Activity implements OnClickListener{
 
@@ -72,15 +73,25 @@ public class MultipleWallpaperChooser extends Activity implements OnClickListene
 
 	private List<FlagItem> getFlagItemList(List<Integer> list){
 		List<FlagItem> items = new ArrayList<FlagItem>();
-		List<Integer> flagPref = Settings.parseMultiFlagPreference(prefs.getString(Settings.MULTIPLE_FLAG_IMAGE_SETTING, "none"));;
+		List<Integer> flagPref = Settings.parseMultiFlagPreferenceIDs(prefs.getString(Settings.MULTIPLE_FLAG_IMAGE_SETTING, "none"));
+		
+		for(Integer id: flagPref)
+			items.add(new FlagItem(id, true));
+
 		for(Integer id : list)
-			items.add(new FlagItem(id, flagPref==null || flagPref.contains(id)));
+			if(!flagPref.contains(id))
+				items.add(new FlagItem(id, false));
+		
 		return items;
 	}
 
 	@Override
 	public void onClick(View v) {
 		if(((Button) v).equals(btnOk)){
+			if(adapter.getCheckedFlagIds().size()<2){
+				Toast.makeText(this, "Seleziona almeno 2 cose", Toast.LENGTH_LONG).show(); //FIXME Extern string
+				return;
+			}
 			prefs.edit().putString(Settings.MULTIPLE_FLAG_IMAGE_SETTING, adapter.getCheckedFlagPref()).commit();
 		}
 		finish();

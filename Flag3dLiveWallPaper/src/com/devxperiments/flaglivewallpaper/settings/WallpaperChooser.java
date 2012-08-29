@@ -74,7 +74,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         
         if(selectedTexture == null)
-        	selectedTexture = prefs.getString(Settings.FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
+        	selectedTexture = prefs.getString(Settings.SINGLE_FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
         String texture = selectedTexture;
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
         	texture = FlagManager.toLandscape(texture);
@@ -144,7 +144,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 	public void onClick(View v) {
 		if(((Button) v).equals(btnOk)){
 			String texture = FlagManager.getFlagNameById((Integer) imageView.getTag());
-			prefs.edit().putString(Settings.FLAG_IMAGE_SETTING, texture).commit();
+			prefs.edit().putString(Settings.SINGLE_FLAG_IMAGE_SETTING, texture).commit();
 		}else
 			FlagManager.release();
 		selectedTexture = null;

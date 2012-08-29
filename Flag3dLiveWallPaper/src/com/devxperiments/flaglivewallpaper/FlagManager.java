@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.threed.jpct.Texture;
+import com.threed.jpct.TextureManager;
+import com.threed.jpct.util.BitmapHelper;
+
 public class FlagManager {
 	private static HashMap<String, Integer> flagIds = null;
 	private static String defaultFlag = null;
@@ -27,9 +31,15 @@ public class FlagManager {
 				if (id == null){
 					id = FlagWallpaperService.context.getResources().getIdentifier(field.getName(), "drawable", "com.devxperiments.flaglivewallpaper");
 					flagIds.put(field.getName(), id);
+					String texture = field.getName();
+					if(!TextureManager.getInstance().containsTexture(texture)){
+						TextureManager.getInstance().addTexture(texture, new Texture(BitmapHelper.convert(FlagWallpaperService.context.getResources().getDrawable(id))));
+						TextureManager.getInstance().compress();
+					}
 				}
 			}
 		}
+		
 	}
 	
 	
