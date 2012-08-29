@@ -34,7 +34,7 @@
                 android:layout_height="fill_parent"
                 android:layout_above="@+id/lin"
                 android:layout_gravity="center_horizontal"
-                android:contentDescription="@string/strWallpaperImage"
+                android:contentDescription="@string/strImageContent"
                 android:scaleType="centerCrop" >
             </ImageView>
 
@@ -54,14 +54,14 @@
                     android:layout_width="0.0dip"
                     android:layout_height="fill_parent"
                     android:layout_weight="1.0"
-                    android:text="@string/strCancel" />
+                    android:text="@android:string/cancel" />
 
                 <Button
                     android:id="@+id/btnOk"
                     android:layout_width="0.0dip"
                     android:layout_height="fill_parent"
                     android:layout_weight="1.0"
-                    android:text="@string/strConfirm" />
+                    android:text="@android:string/ok" />
             </LinearLayout>
         </RelativeLayout>
 

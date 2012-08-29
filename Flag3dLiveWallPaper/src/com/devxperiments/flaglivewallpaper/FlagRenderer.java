@@ -8,6 +8,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
 
+import com.devxperiments.flaglivewallpaper.settings.Settings;
 import com.jbrush.ae.Animator;
 import com.jbrush.ae.EditorObject;
 import com.jbrush.ae.LightData;
@@ -54,7 +55,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer{
 			draw(width, height);
 
 		String texture = PreferenceManager.getDefaultSharedPreferences(FlagWallpaperService.context)
-				.getString(WallpaperChooser.FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
+				.getString(Settings.FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
 		if (width > height)
 			texture = FlagManager.toLandscape(texture);
 		else

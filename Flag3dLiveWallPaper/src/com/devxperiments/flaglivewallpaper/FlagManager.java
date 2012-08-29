@@ -20,7 +20,7 @@ public class FlagManager {
 		Field[] fields = resources.getFields();
 		defaultFlag = fields[0].getName();
 		for (Field field: fields ) {
-			if(!field.getName().equals("ic_launcher")){
+			if(!field.getName().equals("ic_launcher") && !field.getName().startsWith("list_")){
 				if(field.getName().startsWith(DEFAULT))
 					defaultFlag = field.getName();
 				Integer id = flagIds.get(field.getName());
@@ -93,9 +93,11 @@ public class FlagManager {
 	}
 	
 	public static void release(){
-		flagIds.clear();
-		flagIds = null;
-		System.gc();
+		if(flagIds!=null){
+			flagIds.clear();
+			flagIds = null;
+			System.gc();
+		}
 	}
 	
 	public static boolean isReleased(){

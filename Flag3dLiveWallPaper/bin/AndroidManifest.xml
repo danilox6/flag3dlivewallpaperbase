@@ -4,16 +4,15 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk 
-        android:targetSdkVersion="8"
-        android:minSdkVersion="7" />
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="8" />
 
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <service
             android:name=".FlagWallpaperService"
-            android:label="@string/service_label"
             android:permission="android.permission.BIND_WALLPAPER" >
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
@@ -25,9 +24,29 @@
         </service>
 
         <activity
-            android:name=".WallpaperChooser"
+            android:name=".settings.Settings"
             android:exported="true"
+            android:label="Setting"
+            android:theme="@android:style/Theme.Light" >
+        </activity>
+        <activity
+            android:name=".settings.WallpaperChooser"
             android:label="@string/strSelectPic"
+            android:theme="@android:style/Theme.Light" >
+        </activity>
+        <activity
+            android:name=".settings.MultipleWallpaperChooser"
+            android:label="@string/strSelectPic"
+            android:theme="@android:style/Theme.Light" >
+        </activity>
+        <activity
+            android:name=".settings.CreditsActivity"
+            android:label="@string/strCredits"
+            android:theme="@android:style/Theme.Light" >
+        </activity>
+        <activity
+            android:name=".settings.FeedbackActivity"
+            android:label="Feedback"
             android:theme="@android:style/Theme.Light" >
         </activity>
     </application>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFBDBDBD" >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:dslv="http://schemas.android.com/apk/res/com.devxperiments.flaglivewallpaper"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/blin"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:weightSum="1" >
+
+        <com.mobeta.android.dslv.DragSortListView
+            android:id="@+id/dragList"
+            android:layout_width="0.0dp"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="2.5dp"
+            android:layout_weight="0.5"
+            android:cacheColorHint="#00000000"
+            android:scrollingCache="false"
+            dslv:collapsed_height="5dp"
+            dslv:drag_scroll_start="0.33"
+            dslv:float_background_color="#00000000"
+            dslv:max_drag_scroll_speed="0.5"
+            dslv:remove_mode="none"
+            dslv:track_drag_scroll="false" />
+
+        <ImageView
+            android:id="@+id/imgPreview"
+            android:layout_width="0.0dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="2.5dp"
+            android:layout_weight="0.5"
+            android:contentDescription="@string/strImageContent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_resolution" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/blin"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="2.5dp"
+        android:orientation="horizontal" >
+
+        <View
+            android:layout_width="0.0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.2" />
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="@android:string/cancel" />
+
+        <Button
+            android:id="@+id/btnOk"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="@android:string/ok" />
+
+        <View
+            android:layout_width="0.0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.2" />
+    </LinearLayout>
+
+</RelativeLayout>

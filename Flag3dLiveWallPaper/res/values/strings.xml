@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Flag Live Wallpaper</string>
-    <string name="service_label">Flag Live WallPaper</string>
-    <string name="description">Il Live WallPaper della tua squadra del Cuore</string>
-    <string name="strSelectPic">Seleziona una bandiera</string>
-    <string name="strWallpaperImage">Immagine Sfondo</string>
-    <string name="strConfirm">OK</string>
-    <string name="strCancel">Annulla</string>
+
+    <string name="app_name" translate="false">Flag Live Wallpaper</string>
+    <string name="description">The Live Wallpaper of your favorite team!</string>
+    <string name="strSelectPic">Select a flag</string>
+    <string name="strImageContent">Flag</string>
+    
+    <string name="strCredits" translate="false">Credits</string>
+    <string name="strDragDrop" translate="false">Drag&amp;Drop</string>
+
 </resources>

@@ -1,7 +1,8 @@
-package com.devxperiments.flaglivewallpaper;
+package com.devxperiments.flaglivewallpaper.settings;
 
 import java.util.List;
 
+import com.devxperiments.flaglivewallpaper.FlagManager;
 import com.devxperiments.flaglivewallpaper.R;
 
 import android.app.Activity;
@@ -31,11 +32,9 @@ public class WallpaperChooser extends Activity implements OnClickListener{
     private ImageView imageView;
     private Button btnOk;
     private SharedPreferences prefs;
-    private int heigth;
+    private int thumbHeight;
     private Bitmap[] thumbCache;
     private static String selectedTexture;
-    
-    public static final String FLAG_IMAGE_SETTING = "flag";
     
 	/** Called when the activity is first created. */
 	@Override
@@ -75,7 +74,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         
         if(selectedTexture == null)
-        	selectedTexture = prefs.getString(FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
+        	selectedTexture = prefs.getString(Settings.FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
         String texture = selectedTexture;
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
         	texture = FlagManager.toLandscape(texture);
@@ -87,7 +86,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
         ((Button) findViewById(R.id.btnCancel)).setOnClickListener(this);
         
         Display display = getWindowManager().getDefaultDisplay();
-        heigth = display.getHeight();
+        thumbHeight = (display.getHeight()*30/100) - 5;
         
     }
     
@@ -128,8 +127,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
     			imageView = (ImageView) convertView;
     		
     		if (thumbCache[position] == null){
-    			int scaledHeight = (heigth*30/100) - 5;
-    			thumbCache[position] = scaleCenterCrop(BitmapFactory.decodeResource(getResources(), flags.get(position)),scaledHeight,scaledHeight);
+    			thumbCache[position] = scaleCenterCrop(BitmapFactory.decodeResource(getResources(), flags.get(position)),thumbHeight,thumbHeight);
     		}
     		imageView.setImageBitmap(thumbCache[position]);
     		imageView.setAdjustViewBounds(true);
@@ -137,49 +135,52 @@ public class WallpaperChooser extends Activity implements OnClickListener{
     		return imageView;
     	}
     	
-    	private Bitmap scaleCenterCrop(Bitmap source, int newHeight, int newWidth) {
-    	    int sourceWidth = source.getWidth();
-    	    int sourceHeight = source.getHeight();
-
-    	    // Compute the scaling factors to fit the new height and width, respectively.
-    	    // To cover the final image, the final scaling will be the bigger 
-    	    // of these two.
-    	    float xScale = (float) newWidth / sourceWidth;
-    	    float yScale = (float) newHeight / sourceHeight;
-    	    float scale = Math.max(xScale, yScale);
-
-    	    // Now get the size of the source bitmap when scaled
-    	    float scaledWidth = scale * sourceWidth;
-    	    float scaledHeight = scale * sourceHeight;
-
-    	    // Let's find out the upper left coordinates if the scaled bitmap
-    	    // should be centered in the new size give by the parameters
-    	    float left = (newWidth - scaledWidth) / 2;
-    	    float top = (newHeight - scaledHeight) / 2;
-
-    	    // The target rectangle for the new, scaled version of the source bitmap will now
-    	    // be
-    	    RectF targetRect = new RectF(left, top, left + scaledWidth, top + scaledHeight);
-
-    	    // Finally, we create a new bitmap of the specified size and draw our new,
-    	    // scaled bitmap onto it.
-    	    Bitmap dest = Bitmap.createBitmap(newWidth, newHeight, source.getConfig());
-    	    Canvas canvas = new Canvas(dest);
-    	    canvas.drawBitmap(source, null, targetRect, null);
-
-    	    return dest;
-    	}
+    	
     	
     }
+    
 
 	@Override
 	public void onClick(View v) {
 		if(((Button) v).equals(btnOk)){
 			String texture = FlagManager.getFlagNameById((Integer) imageView.getTag());
-			prefs.edit().putString(FLAG_IMAGE_SETTING, texture).commit();
+			prefs.edit().putString(Settings.FLAG_IMAGE_SETTING, texture).commit();
 		}else
 			FlagManager.release();
 		selectedTexture = null;
 		finish();
+	}
+	
+	public static Bitmap scaleCenterCrop(Bitmap source, int newHeight, int newWidth) {
+	    int sourceWidth = source.getWidth();
+	    int sourceHeight = source.getHeight();
+
+	    // Compute the scaling factors to fit the new height and width, respectively.
+	    // To cover the final image, the final scaling will be the bigger 
+	    // of these two.
+	    float xScale = (float) newWidth / sourceWidth;
+	    float yScale = (float) newHeight / sourceHeight;
+	    float scale = Math.max(xScale, yScale);
+
+	    // Now get the size of the source bitmap when scaled
+	    float scaledWidth = scale * sourceWidth;
+	    float scaledHeight = scale * sourceHeight;
+
+	    // Let's find out the upper left coordinates if the scaled bitmap
+	    // should be centered in the new size give by the parameters
+	    float left = (newWidth - scaledWidth) / 2;
+	    float top = (newHeight - scaledHeight) / 2;
+
+	    // The target rectangle for the new, scaled version of the source bitmap will now
+	    // be
+	    RectF targetRect = new RectF(left, top, left + scaledWidth, top + scaledHeight);
+
+	    // Finally, we create a new bitmap of the specified size and draw our new,
+	    // scaled bitmap onto it.
+	    Bitmap dest = Bitmap.createBitmap(newWidth, newHeight, source.getConfig());
+	    Canvas canvas = new Canvas(dest);
+	    canvas.drawBitmap(source, null, targetRect, null);
+
+	    return dest;
 	}
 }

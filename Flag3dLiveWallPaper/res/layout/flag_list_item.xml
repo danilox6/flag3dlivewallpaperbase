@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rel"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <CheckedTextView
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="2dp"
+        android:layout_centerVertical="true"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/drag"
+        android:layout_toRightOf="@+id/checkBox" >
+
+        <ImageView
+            android:id="@+id/imgListFlag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/strImageContent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/drag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/list_tile_normal"
+        android:contentDescription="@string/strDragDrop"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/rel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/list_selector_background"
+        android:contentDescription="@string/strDragDrop" />
+
+</RelativeLayout>
