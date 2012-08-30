@@ -5,13 +5,22 @@
         <attr name="android:galleryItemBackground" />
     </declare-styleable>
 
-    <string-array name="pref_flag_type_entries">
+    <string-array name="pref_flag_image_entries">
         <item>Single</item>
         <item>Multiple</item>
     </string-array>
-    <string-array name="pref_flag_type_values">
+    <string-array name="pref_flag_image_values">
         <item>single_flag</item>
         <item>multi_flag</item>
+    </string-array>
+    
+       <string-array name="pref_flag_mode_entries">
+        <item>Fullscreen</item>
+        <item>Sky</item>
+    </string-array>
+    <string-array name="pref_flag_mode_values">
+        <item>flag_fullscreen</item>
+        <item>flag_sky</item>
     </string-array>
 
 </resources>

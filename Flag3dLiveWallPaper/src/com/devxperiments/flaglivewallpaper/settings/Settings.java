@@ -16,11 +16,15 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
 public class Settings extends PreferenceActivity implements OnPreferenceClickListener{
-
-	public static final String MULTIPLE_FLAG_TIME_SEC = "multi_flag_time";
+	
+	public static final String FLAG_MODE_SETTING = "flag_mode_setting";
+	public static final String FLAG_MODE_FULLSCREEN ="flag_fullscreen";
+	public static final String FLAG_MODE_SKY ="flag_sky";
+	
 	public static final String FLAG_IMAGE_SETTING = "flag_image_setting";
 	public static final String SINGLE_FLAG_IMAGE_SETTING = "single_flag";
 	public static final String MULTIPLE_FLAG_IMAGE_SETTING = "multi_flag";
+	public static final String MULTIPLE_FLAG_TIME_SEC = "multi_flag_time";
 	
 	public static final String FEEDBACK = "feedback";
 	public static final String CREDITS = "credits";

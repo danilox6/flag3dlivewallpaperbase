@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.devxperiments.flaglivewallpaper.settings.Settings;
 import com.jbrush.ae.Animator;
@@ -41,13 +40,15 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 	private TimerTask updateFlagTask = null;
 	private String texture = null;
 	private SharedPreferences prefs;
-	private boolean isSingleFlagSet = false, preferenceUpdated;
+	private boolean isSingleFlagSet, imagePreferenceUpdated, modePreferenceUpdated;
 
 
 	public FlagRenderer() {
 		prefs = PreferenceManager.getDefaultSharedPreferences(FlagWallpaperService.context);
 		prefs.registerOnSharedPreferenceChangeListener( this);
-		preferenceUpdated = false;
+		imagePreferenceUpdated = false;
+		modePreferenceUpdated = false;
+		isSingleFlagSet = false;
 	}
 
 	@Override
@@ -61,6 +62,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 			texture = null;
 		}
 		framebuffer.clear();
+		framebuffer.blit(TextureManager.getInstance().getTexture("sky"),0,0,0,0,512,512,FrameBuffer.OPAQUE_BLITTING);
 		world.renderScene(framebuffer);
 		Animator.EnableAnimations();
 		world.draw(framebuffer);
@@ -74,18 +76,16 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		}
 
 		framebuffer = new FrameBuffer(gl, screenWidth, screenHeight);
-		if(world==null)
+		if(world==null || modePreferenceUpdated){
+			modePreferenceUpdated = false;
 			draw(screenWidth, screenHeight);
-
+			isSingleFlagSet = false;
+		}
 
 		String flagSetting = prefs.getString(Settings.FLAG_IMAGE_SETTING, Settings.SINGLE_FLAG_IMAGE_SETTING);
 
-		Log.e("PREF", flagSetting);
-		Log.e("PREF", "isSingleFlagSet: "+isSingleFlagSet);
-		Log.e("PREF", "preferenceUpdated: "+preferenceUpdated);
-
 		if((flagSetting.equals(Settings.SINGLE_FLAG_IMAGE_SETTING) && !isSingleFlagSet) ||
-				(flagSetting.equals(Settings.SINGLE_FLAG_IMAGE_SETTING) && preferenceUpdated)){
+				(flagSetting.equals(Settings.SINGLE_FLAG_IMAGE_SETTING) && imagePreferenceUpdated)){
 			
 			if(updateFlagTask != null)
 				updateFlagTask.cancel();
@@ -93,13 +93,13 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 			String texture = prefs.getString(Settings.SINGLE_FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
 			flag.setTexture(getAppropriateFlag(texture, screenWidth, screenHeight));
 			
-			preferenceUpdated = false;
+			imagePreferenceUpdated = false;
 			isSingleFlagSet = true;
 			//			changeFlagTexture(texture, screenWidth, screenHeight);
-		}else if(!isSingleFlagSet && (updateFlagTask == null || preferenceUpdated)){
+		}else if(!isSingleFlagSet && (updateFlagTask == null || imagePreferenceUpdated)){
 
 			isSingleFlagSet = false;
-			preferenceUpdated = false;
+			imagePreferenceUpdated = false;
 			
 			if(updateFlagTask != null)
 				updateFlagTask.cancel();
@@ -145,23 +145,35 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		Vector<EditorObject> objects = new Vector<EditorObject>();
 		Vector<LightData> lights = new Vector<LightData>();
 
+		
+		String flagModeSetting = prefs.getString(Settings.FLAG_MODE_SETTING, Settings.FLAG_MODE_FULLSCREEN);
+		
 		AssetManager assetManager = FlagWallpaperService.context.getAssets();
-		objects = Scene.loadSerializedLevel("flag.txt", objects, lights, null,null, world, assetManager);
+		objects = Scene.loadSerializedLevel(flagModeSetting+".txt", objects, lights, null,null, world, assetManager);
 
-		flag = Scene.findObject("flag0", objects);
+		flag = Scene.findObject(flagModeSetting+"0", objects);
 		Animator.Play(flag, "wave", objects);
-
+		
 		float[] bb = flag.getMesh().getBoundingBox();
-		//		float height = Math.abs(bb[2]-bb[3]);
 		float width = Math.abs(bb[0]-bb[1]);
-
-		float moveout = 30; 
 		Camera cam = world.getCamera();
-		cam.setPositionToCenter(flag);
-		cam.moveCamera(Camera.CAMERA_MOVEOUT, moveout);
-		//		cam.setYFOV(cam.convertRADAngleIntoFOV((float) Math.atan(height/(2*moveout))));
-		cam.setFOV(cam.convertRADAngleIntoFOV((float) Math.atan(width/(2*moveout))));
-		cam.lookAt(flag.getTransformedCenter());
+		float moveout;
+		if(flagModeSetting.equals(Settings.FLAG_MODE_FULLSCREEN)){
+			moveout = 30; 
+			cam.setPositionToCenter(flag);
+			cam.moveCamera(Camera.CAMERA_MOVEOUT, moveout);
+			//		cam.setYFOV(cam.convertRADAngleIntoFOV((float) Math.atan(height/(2*moveout))));
+			cam.setFOV(cam.convertRADAngleIntoFOV((float) Math.atan(width/(2*moveout))));
+			cam.lookAt(flag.getTransformedCenter());
+		}else{
+			float height = Math.abs(bb[2]-bb[3]);
+			moveout = 35; 
+			cam.setPosition(0, 0, 0);
+			cam.moveCamera(Camera.CAMERA_MOVEOUT, moveout);
+			cam.moveCamera(Camera.CAMERA_MOVEDOWN, height-5);
+			cam.setFOV(cam.convertRADAngleIntoFOV((float) Math.atan(width/(2*moveout))));
+			cam.lookAt(new SimpleVector(width/2, -height/2, 0));			
+		}
 
 		Light sun = new Light(world);
 		SimpleVector sv = new SimpleVector();
@@ -212,7 +224,10 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,	String key) {
-		preferenceUpdated = true;
+		if(key.equals(Settings.FLAG_MODE_SETTING))
+			modePreferenceUpdated = true;
+		else
+			imagePreferenceUpdated = true;
 	}
 
 }

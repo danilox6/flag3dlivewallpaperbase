@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+     <PreferenceCategory android:title="Modalità Bandiera" >
+        <ListPreference
+            android:defaultValue="flag_fullscreen"
+            android:entries="@array/pref_flag_mode_entries"
+            android:entryValues="@array/pref_flag_mode_values"
+            android:key="flag_mode_setting"
+            android:summary="Scegli tra fullscreen o sky"
+            android:title="Modalità Bandiera" />
+    </PreferenceCategory>
+    
+    
     <PreferenceCategory android:title="Immagine Bandiera" >
         <ListPreference
             android:defaultValue="single_flag"
-            android:entries="@array/pref_flag_type_entries"
-            android:entryValues="@array/pref_flag_type_values"
+            android:entries="@array/pref_flag_image_entries"
+            android:entryValues="@array/pref_flag_image_values"
             android:key="flag_image_setting"
             android:summary="Scegli tra singola o multi"
             android:title="Tipo Immagine" />
