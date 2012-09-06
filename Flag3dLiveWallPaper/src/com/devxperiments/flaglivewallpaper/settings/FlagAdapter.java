@@ -30,7 +30,7 @@ public class FlagAdapter extends ArrayAdapter<FlagItem> implements OnTouchListen
 	
 	public FlagAdapter(Context context, List<FlagItem> objects, ImageView flagPreview) {
 		super(context, R.layout.flag_list_item, objects);
-	    thumbHeight = context.getResources().getDrawable(R.drawable.list_tile_normal).getMinimumHeight()-6;
+	    thumbHeight = context.getResources().getDrawable(R.drawable.sys_list_tile_normal).getMinimumHeight()-6;
 	    thumbCache = new SparseArray<Bitmap>();
 	    this.flagPreview = flagPreview;
 	}
@@ -82,7 +82,7 @@ public class FlagAdapter extends ArrayAdapter<FlagItem> implements OnTouchListen
 		viewHolder.checkBox.setChecked(flagItem.checked);
 		int flagId = flagItem.id;
 		if (thumbCache.get(flagId) == null){
-			thumbCache.put(flagId, WallpaperChooser.scaleCenterCrop(BitmapFactory.decodeResource(getContext().getResources(), flagId),thumbHeight,thumbHeight));
+			thumbCache.put(flagId, BitmapUtils.scaleCenterCrop(BitmapFactory.decodeResource(getContext().getResources(), flagId),thumbHeight,thumbHeight));
 		}
 		viewHolder.imageView.setImageBitmap(thumbCache.get(flagId));
 		if(flagItem.checked)

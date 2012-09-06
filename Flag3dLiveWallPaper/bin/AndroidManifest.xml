@@ -9,7 +9,7 @@
         android:targetSdkVersion="8" />
 
     <application
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/sys_ic_launcher"
         android:label="@string/app_name" >
         <service
             android:name=".FlagWallpaperService"
@@ -48,6 +48,12 @@
             android:label="Feedback"
             android:theme="@android:style/Theme.Light" >
         </activity>
+        <activity
+            android:name="com.droid4you.util.cropimage.CropImage"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="CropLabel" >
+        </activity>
+          <receiver android:name=".DayTimeAlarmManager"></receiver>
     </application>
 
 </manifest>

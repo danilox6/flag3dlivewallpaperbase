@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-     <PreferenceCategory android:title="Modalità Bandiera" >
+    <PreferenceCategory android:title="Modalità Bandiera" >
         <ListPreference
             android:defaultValue="flag_fullscreen"
             android:entries="@array/pref_flag_mode_entries"
@@ -9,9 +9,21 @@
             android:key="flag_mode_setting"
             android:summary="Scegli tra fullscreen o sky"
             android:title="Modalità Bandiera" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="day_time_sky"
+            android:disableDependentsState="true" 
+            android:title="Cielo basato su day time"
+            android:summary="Il cielo cambia a seconda dell'ora"/>
+        
+        <Preference 
+            android:key="sky_image"
+            android:dependency="day_time_sky"
+            android:title="Seleziona immagine sfondo"
+            android:summary="Seleziona lo sfondo dietro la bandiera"
+            />
     </PreferenceCategory>
-    
-    
     <PreferenceCategory android:title="Immagine Bandiera" >
         <ListPreference
             android:defaultValue="single_flag"
@@ -32,7 +44,6 @@
             android:summary="Tempo tra un cambio e un altro"
             android:title="Tempo Aggiornamento" />
     </PreferenceCategory>
-    
     <PreferenceCategory android:title="Feedback e Crediti" >
         <Preference
             android:key="feedback"

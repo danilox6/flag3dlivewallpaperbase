@@ -4,22 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.devxperiments.flaglivewallpaper.DayTimeAlarmManager;
 import com.devxperiments.flaglivewallpaper.FlagManager;
+import com.devxperiments.flaglivewallpaper.FlagWallpaperService;
 import com.devxperiments.flaglivewallpaper.R;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
-public class Settings extends PreferenceActivity implements OnPreferenceClickListener{
+public class Settings extends PreferenceActivity implements OnPreferenceClickListener, OnSharedPreferenceChangeListener{
 	
 	public static final String FLAG_MODE_SETTING = "flag_mode_setting";
 	public static final String FLAG_MODE_FULLSCREEN ="flag_fullscreen";
 	public static final String FLAG_MODE_SKY ="flag_sky";
+	public static final String SKY_MODE_BACKGROUND_IMAGE ="sky_image";
+	public static final String SKY_USER_BACKGROUND = "sys_sky_user";
+	public static final String DAY_TIME_SKY_BACKGROUND ="day_time_sky";
 	
 	public static final String FLAG_IMAGE_SETTING = "flag_image_setting";
 	public static final String SINGLE_FLAG_IMAGE_SETTING = "single_flag";
@@ -29,17 +35,21 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 	public static final String FEEDBACK = "feedback";
 	public static final String CREDITS = "credits";
 	
-	SharedPreferences prefs;
-
+	private SharedPreferences prefs;
+	private Preference flagTimePref;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings);
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
+		prefs.registerOnSharedPreferenceChangeListener(this);
+		
 		findPreference(SINGLE_FLAG_IMAGE_SETTING).setOnPreferenceClickListener(this);
 		findPreference(FEEDBACK).setOnPreferenceClickListener(this);
 		findPreference(CREDITS).setOnPreferenceClickListener(this);
+		findPreference(SKY_MODE_BACKGROUND_IMAGE).setOnPreferenceClickListener(this);
 	}
 
 	@Override
@@ -62,6 +72,11 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 			return true;
 		}else if(key.equals(CREDITS)){
 			Intent intent = new Intent(this, MultipleWallpaperChooser.class);
+			startActivity(intent);
+			return true;
+		}else if(key.equals(SKY_MODE_BACKGROUND_IMAGE)){
+			Intent intent = new Intent(this, WallpaperChooser.class);
+			intent.putExtra(SKY_MODE_BACKGROUND_IMAGE, true);
 			startActivity(intent);
 			return true;
 		}
@@ -87,4 +102,16 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 		return flags;
 	}
 
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+		if(key.equals(DAY_TIME_SKY_BACKGROUND)){
+			if(prefs.getBoolean(DAY_TIME_SKY_BACKGROUND, true))
+				DayTimeAlarmManager.start(FlagWallpaperService.context);
+			else 
+				DayTimeAlarmManager.stop();
+		}
+	}
+
+	
+	
 }
