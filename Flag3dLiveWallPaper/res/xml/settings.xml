@@ -44,6 +44,12 @@
             android:summary="Tempo tra un cambio e un altro"
             android:title="Tempo Aggiornamento" />
     </PreferenceCategory>
+    
+     <Preference
+            android:key="default"
+            android:title="Restore Default" />
+    
+    
     <PreferenceCategory android:title="Feedback e Crediti" >
         <Preference
             android:key="feedback"

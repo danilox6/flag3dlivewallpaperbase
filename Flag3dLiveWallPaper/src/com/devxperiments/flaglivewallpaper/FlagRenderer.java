@@ -86,7 +86,11 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 			else
 				background = prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day");
 			FlagManager.loadTexture(background);
-			framebuffer.blit(TextureManager.getInstance().getTexture(background),0,0,0,0,width,height,FrameBuffer.OPAQUE_BLITTING);
+			framebuffer.blit(TextureManager.getInstance().getTexture(background),
+					(BitmapUtils.getBestFittingScreenPow(width,height)-width)/2,
+					(BitmapUtils.getBestFittingScreenPow(width,height)-height)/2,
+					0,0,
+					width,height,FrameBuffer.OPAQUE_BLITTING);
 		}
 		world.renderScene(framebuffer);
 		Animator.EnableAnimations();
@@ -221,30 +225,9 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		//		sun.disable();
 
 		MemoryHelper.compact();
-
-
+		
 	}
 
-	//	public void changeFlagTexture(String texture, int screenWidth, int screenHeight){
-	//		texture = getAppropriateFlag(texture, screenWidth, screenHeight);
-	//		texture = loadFlagTexture(texture);
-	//		flag.setTexture(texture);
-	//	}
-	//
-	//	public void changeFlagTexture(String texture){
-	//		texture = loadFlagTexture(texture);
-	//		flag.setTexture(texture);
-	//	}
-	//
-	//	public String loadFlagTexture(String texture){
-	//
-	//		if(!TextureManager.getInstance().containsTexture(texture)){
-	//			//			TextureManager.getInstance().flush();
-	//			TextureManager.getInstance().addTexture(texture, new Texture(BitmapHelper.convert(FlagWallpaperService.context.getResources().getDrawable(FlagManager.getFlagId(texture)))));
-	//			TextureManager.getInstance().compress();
-	//		}
-	//		return texture;
-	//	}
 
 	public String getAppropriateFlag(String texture, int screenWidth, int screenHeight){
 		if (screenWidth > screenHeight)
@@ -258,14 +241,14 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 	public void onSharedPreferenceChanged(SharedPreferences prefs,	String key) {
 		if(key.equals(Settings.SKY_MODE_BACKGROUND_IMAGE)){
 			if(prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day").equals(Settings.SKY_USER_BACKGROUND))
-				userBackPrefUpdated = true;
+				userBackPrefUpdated = true;			
 			else return;
 		}
 		else if(key.equals(Settings.FLAG_MODE_SETTING))
 			modePreferenceUpdated = true;
 		else if(key.equals(Settings.DAY_TIME_SKY_BACKGROUND) && prefs.getBoolean(Settings.DAY_TIME_SKY_BACKGROUND, true))
 			dayTimeUpdated = true;
-		else
+		else if(key.equals(Settings.FLAG_IMAGE_SETTING))
 			imagePreferenceUpdated = true;
 	}
 

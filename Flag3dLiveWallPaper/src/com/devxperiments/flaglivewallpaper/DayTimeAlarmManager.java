@@ -30,9 +30,9 @@ public class DayTimeAlarmManager extends BroadcastReceiver{
 	}
 	
 	public static void start(Context context){
-		if(pendingIntent==null)
-			inizialize(context);
-		setNextAlarm();
+//		if(pendingIntent==null)
+//			inizialize(context);
+//		setNextAlarm();
 	}
 
 	private static void inizialize(Context context){

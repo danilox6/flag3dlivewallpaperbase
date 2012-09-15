@@ -11,6 +11,7 @@ import com.devxperiments.flaglivewallpaper.R;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -50,6 +51,22 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 		findPreference(FEEDBACK).setOnPreferenceClickListener(this);
 		findPreference(CREDITS).setOnPreferenceClickListener(this);
 		findPreference(SKY_MODE_BACKGROUND_IMAGE).setOnPreferenceClickListener(this);
+		findPreference("default").setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Editor editor = prefs.edit(); 
+				editor.clear();
+				editor.commit();
+				Intent intent = getIntent();
+				overridePendingTransition(0, 0);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				finish();
+				overridePendingTransition(0, 0);
+				startActivity(intent);
+				return true;
+			}
+		});
 	}
 
 	@Override

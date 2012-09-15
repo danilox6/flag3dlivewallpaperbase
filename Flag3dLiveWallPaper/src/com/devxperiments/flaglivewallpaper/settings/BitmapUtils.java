@@ -15,10 +15,12 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.view.Display;
 
 public class BitmapUtils {
 	
 	private static Bitmap userBitmap = null;
+	private static int bestFittingScreenPow = 0;
 
 	public static class BitmapDataObject implements Serializable {
 		private static final long serialVersionUID = 111696345129311948L;
@@ -71,6 +73,11 @@ public class BitmapUtils {
 		userBitmap = bitmap;
 		if(bitmap!=null)
 			saveBitmap(context, bitmap);
+	}
+	
+	public static void freeBitmap(){
+		userBitmap = null;
+		System.gc();
 	}
 
 
@@ -187,5 +194,30 @@ public class BitmapUtils {
 
 		return b2;
 	}
+
+	public static int getBestFittingScreenPow(int width, int heigth) {
+		if(bestFittingScreenPow == 0){
+			int max = Math.max(width, heigth);
+			int nearerTwoPower=0;
+			while(twoPower(++nearerTwoPower)<=max);
+			bestFittingScreenPow = twoPower(nearerTwoPower);
+		}
+		return bestFittingScreenPow;
+	}
+	
+	public static int getBestFittingScreenPow(Display display){
+		return getBestFittingScreenPow(display.getWidth(), display.getHeight());		
+	}
+	
+	/**
+	 * Ritorna 2^power
+	 */
+	private static int twoPower(int power) {
+	    int result = 1;
+	    for (int i = 0; i < power; i++)
+	        result *= 2;
+	    return result;
+	}
+
 
 }

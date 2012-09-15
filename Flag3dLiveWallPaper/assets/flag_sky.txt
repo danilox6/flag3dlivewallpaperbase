@@ -1,5 +1,5 @@
-fp-flag_sky0.3ds on-flag_sky0 rx-0.0 ry-0.0 rz-0.0 tx-0.7 ty--5.0 tz-0.0 oc-0 cx-0 cz-0.0 cc-true sl-false ot--1 bm-null pa-null ak-10 sn-wave sp-0.017640004 sf-flag_sky0.3ds sf-flag_sky1.3ds sf-flag_sky2.3ds sf-flag_sky3.3ds sf-flag_sky4.3ds sf-flag_sky5.3ds sf-flag_sky6.3ds sf-flag_sky7.3ds sf-flag_sky8.3ds sf-flag_sky9.3ds ac-0 ai-0 as-0 os-1.0 st-0 sh-1 
-fp-pole.3ds on-pole rx-0.0 ry-0.0 rz-0.0 tx-0.0 ty--3.6 tz-0.0 oc-0 cx-0 cz-0.0 cc-true sl-false ot--1 bm-null pa-null os-1.0 st-0 sh-1 
+fp-flag_sky0.3ds on-flag_sky0 rx-0.0 ry-0.0 rz-0.0 tx-0.7 ty--6.0 tz-0.0 oc-0 cx-0 cz-0.0 cc-true sl-false ot--1 bm-null pa-null ak-10 sn-wave sp-0.017640004 sf-flag_sky0.3ds sf-flag_sky1.3ds sf-flag_sky2.3ds sf-flag_sky3.3ds sf-flag_sky4.3ds sf-flag_sky5.3ds sf-flag_sky6.3ds sf-flag_sky7.3ds sf-flag_sky8.3ds sf-flag_sky9.3ds ac-0 ai-0 as-0 os-1.0 st-0 sh-1 
+fp-pole.3ds on-pole rx-0.0 ry-0.0 rz-0.0 tx-0.0 ty--4.6 tz-0.0 oc-0 cx-0 cz-0.0 cc-true sl-false ot--1 bm-null pa-null os-1.0 st-0 sh-1 
 px--11.0 py-11.0 pz--3.0 ix-80.0 iy-80.0 iz-80.0 la--1.0 dn-PointLight1 dd--2.0
 px--9.0 py--12.0 pz-0.0 ix-80.0 iy-80.0 iz-80.0 la--1.0 dn-PointLight2 dd--2.0
 px-0.0 py-0.0 pz--1.0 ix-80.0 iy-80.0 iz-80.0 la--1.0 dn-PointLight3 dd--2.0

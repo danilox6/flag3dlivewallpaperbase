@@ -3,6 +3,7 @@ package com.devxperiments.flaglivewallpaper.settings;
 import java.util.List;
 
 import com.devxperiments.flaglivewallpaper.FlagManager;
+import com.devxperiments.flaglivewallpaper.FlagWallpaperService;
 import com.devxperiments.flaglivewallpaper.R;
 import com.droid4you.util.cropimage.CropImage;
 
@@ -31,8 +32,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class WallpaperChooser extends Activity implements OnClickListener{
-	
-	
+
+
 	private List<Integer> pics;
 	private ImageView imageView;
 	private Button btnOk;
@@ -43,22 +44,22 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 	private static String selectedTexture;
 	private boolean skyBackground;
 	private OnClickListener listener = null;
-	private final int PICKED_IMAGE = 0;
-	private final int CROPPED_IMAGE = 1;
+	private final int PICKED_IMAGE = 1;
+	private final int CROPPED_IMAGE = 2;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wallpaper_chooser);
-		
-		
+
+
 		skyBackground = getIntent().getBooleanExtra(Settings.SKY_MODE_BACKGROUND_IMAGE, false);
 
 		if(skyBackground){
 			pics = FlagManager.getSkyBackgroundIds();
 			listener = new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -75,37 +76,37 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 		Gallery gallery = (Gallery) findViewById(R.id.gallery);
 		gallery.setAdapter(new FlagAdapter(this));
 		gallery.setCallbackDuringFling(false);
-		
-		
+
+
 
 		gallery.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				int flagId = pics.get(position);
-				
+
 				if(skyBackground && flagId == R.drawable.sys_btn_add){
-					
-//					if(prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day").equals(Settings.SKY_USER_BACKGROUND)){
-//						
-//					}
-					
+
+					//					if(prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day").equals(Settings.SKY_USER_BACKGROUND)){
+					//						
+					//					}
+
 					txtInfo.setVisibility(View.VISIBLE);
 					txtInfo.setText("Clicca l'immagine per caricare una foto"); //FIXME externalizzare
-					
-					Bitmap bitmap = BitmapUtils.getUserBitmap(WallpaperChooser.this);
+
+					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context);
 					if(bitmap == null)
 						imageView.setImageResource(flagId);
 					else
 						imageView.setImageBitmap(bitmap);
-					
+
 					imageView.setOnClickListener(listener);
-					
+
 				}else{
 					txtInfo.setVisibility(View.GONE);
-				
+
 					imageView.setOnClickListener(null);
-					
+
 					if(!skyBackground){
 						selectedTexture = FlagManager.getFlagNameById(flagId);
 						if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
@@ -113,7 +114,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 					}
 					imageView.setImageResource(flagId);
 				}
-				
+
 				imageView.setTag(flagId);
 			}
 
@@ -150,45 +151,47 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 		if(((Button) v).equals(btnOk)){
 			int flagId = (Integer) imageView.getTag();
 			String texture;
-			if(flagId == R.drawable.sys_btn_add)
+			if(flagId == R.drawable.sys_btn_add){
+				prefs.edit().putString(Settings.SKY_MODE_BACKGROUND_IMAGE, "update").commit();
 				texture = Settings.SKY_USER_BACKGROUND;
-			else
+			}else
 				texture = FlagManager.getFlagNameById(flagId);
 			prefs.edit().putString(skyBackground?Settings.SKY_MODE_BACKGROUND_IMAGE : Settings.SINGLE_FLAG_IMAGE_SETTING, texture).commit();
 		}else
-		selectedTexture = null;
+			selectedTexture = null;
 		finish();
 	}
-	
-	
+
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		try{
-		if(resultCode == RESULT_OK){
-			switch (requestCode) {
-			case PICKED_IMAGE:
-				Uri selectedImage = data.getData();
-				Intent intent = new Intent(this, CropImage.class);
-				intent.putExtra("image-path", selectedImage.toString());
-				intent.putExtra("return-data", true);
-				startActivityForResult(intent, CROPPED_IMAGE);
-				break;
+			Log.e("CI SONO", "sto qua");
+			if(resultCode == RESULT_OK){
+				switch (requestCode) {
+				case PICKED_IMAGE:
+					Uri selectedImage = data.getData();
+					Intent intent = new Intent(this, CropImage.class);
+					intent.putExtra("image-path", selectedImage.toString());
+					intent.putExtra("return-data", true);
+					startActivityForResult(intent, CROPPED_IMAGE);
+					break;
 
-			case CROPPED_IMAGE:
-				Bitmap bitmap = (Bitmap) data.getParcelableExtra("data");
-				BitmapUtils.setUserBitmap(this, bitmap);
-				imageView.setImageBitmap(bitmap);
-				break;
+				case CROPPED_IMAGE:
+					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context);
+					Log.e("CROPPED", bitmap==null?"null":bitmap.getHeight()+"");
+					imageView.setImageBitmap(bitmap);
+					break;
+				}
 			}
-		}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	
+
+
 
 	public class FlagAdapter extends BaseAdapter {
 
@@ -237,5 +240,5 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 
 	}
 
-	
+
 }
