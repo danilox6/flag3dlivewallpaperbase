@@ -3,8 +3,10 @@
 
     <string name="app_name" translate="false">Flag Live Wallpaper</string>
     <string name="description">The Live Wallpaper of your favorite team!</string>
-    <string name="strSelectPic">Select a flag</string>
+    <string name="strSelectFlagSng">Select a flag</string>
+    <string name="strSelectFlagPlr">Select flags</string>
     <string name="strImageContent">Flag</string>
+    
     
     <string name="strCredits" translate="false">Credits</string>
     <string name="strDragDrop" translate="false">Drag&amp;Drop</string>

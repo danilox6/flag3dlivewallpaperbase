@@ -84,6 +84,8 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				int flagId = pics.get(position);
+				
+				boolean portrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
 				if(skyBackground && flagId == R.drawable.sys_btn_add){
 
@@ -94,7 +96,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 					txtInfo.setVisibility(View.VISIBLE);
 					txtInfo.setText("Clicca l'immagine per caricare una foto"); //FIXME externalizzare
 
-					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context);
+					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context, portrait);
 					if(bitmap == null)
 						imageView.setImageResource(flagId);
 					else
@@ -109,7 +111,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 
 					if(!skyBackground){
 						selectedTexture = FlagManager.getFlagNameById(flagId);
-						if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+						if(!portrait)
 							flagId = FlagManager.toLandscape(flagId);
 					}
 					imageView.setImageResource(flagId);
@@ -174,12 +176,12 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 					Uri selectedImage = data.getData();
 					Intent intent = new Intent(this, CropImage.class);
 					intent.putExtra("image-path", selectedImage.toString());
-					intent.putExtra("return-data", true);
+					intent.putExtra("orientation", true);
 					startActivityForResult(intent, CROPPED_IMAGE);
 					break;
 
 				case CROPPED_IMAGE:
-					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context);
+					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context, getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
 					Log.e("CROPPED", bitmap==null?"null":bitmap.getHeight()+"");
 					imageView.setImageBitmap(bitmap);
 					break;

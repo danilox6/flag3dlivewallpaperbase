@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -78,7 +79,8 @@ public class FlagManager {
 	}
 
 	private static void loadUserTexture() {
-		Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context);
+		boolean portrait = FlagWallpaperService.context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+		Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context, portrait);
 		loadTexture(Settings.SKY_USER_BACKGROUND, bitmap);
 	}
 

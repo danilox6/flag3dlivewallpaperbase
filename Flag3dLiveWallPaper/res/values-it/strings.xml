@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="description">Il Live Wallpaper della tua squadra del Cuore</string>
-    <string name="strSelectPic">Seleziona una bandiera</string>
+    <string name="strSelectFlagSng">Seleziona una bandiera</string>
+    <string name="strSelectFlagPlr">Seleziona le bandiere</string>
     <string name="strImageContent">Bandiera</string>
 </resources>

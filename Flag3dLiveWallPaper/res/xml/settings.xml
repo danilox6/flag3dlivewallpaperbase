@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.devxperiments.flaglivewallpaper" >
 
     <PreferenceCategory android:title="Modalità Bandiera" >
         <ListPreference
@@ -10,19 +11,25 @@
             android:summary="Scegli tra fullscreen o sky"
             android:title="Modalità Bandiera" />
 
-        <CheckBoxPreference
+        <!--
+             CheckBoxPreference
             android:defaultValue="true"
+            android:disableDependentsState="true"
             android:key="day_time_sky"
-            android:disableDependentsState="true" 
-            android:title="Cielo basato su day time"
-            android:summary="Il cielo cambia a seconda dell'ora"/>
-        
-        <Preference 
+            android:summary="Il cielo cambia a seconda dell&apos;ora"
+            android:title="Cielo basato su day time" /
+        -->
+
+        <Preference
             android:key="sky_image"
-            android:dependency="day_time_sky"
-            android:title="Seleziona immagine sfondo"
             android:summary="Seleziona lo sfondo dietro la bandiera"
-            />
+            android:title="Seleziona immagine sfondo" />
+
+        <com.devxperiments.flaglivewallpaper.settings.AlhpaSliderPreference
+            android:key="alpha"
+            android:persistent="true"
+            android:summary="Seleziona il livello di trasparenza"
+            android:title="Trasparenza" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Immagine Bandiera" >
         <ListPreference
@@ -35,22 +42,20 @@
 
         <Preference
             android:key="single_flag"
-            android:title="@string/strSelectPic" />
+            android:title="@string/strSelectFlagSng" />
 
         <EditTextPreference
-            android:dialogMessage="Scegli tra secondi o minuti"
+            android:dialogMessage="Inserisci il tempo in minuti"
+            android:defaultValue="10"
             android:dialogTitle="Tempo Aggiornamento"
             android:key="multi_flag_time"
             android:summary="Tempo tra un cambio e un altro"
             android:title="Tempo Aggiornamento" />
     </PreferenceCategory>
-    
-     <Preference
+    <PreferenceCategory android:title="Altro" >
+        <Preference
             android:key="default"
             android:title="Restore Default" />
-    
-    
-    <PreferenceCategory android:title="Feedback e Crediti" >
         <Preference
             android:key="feedback"
             android:title="Feedback" />

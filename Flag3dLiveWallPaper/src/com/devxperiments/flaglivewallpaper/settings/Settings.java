@@ -31,13 +31,15 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 	public static final String FLAG_IMAGE_SETTING = "flag_image_setting";
 	public static final String SINGLE_FLAG_IMAGE_SETTING = "single_flag";
 	public static final String MULTIPLE_FLAG_IMAGE_SETTING = "multi_flag";
-	public static final String MULTIPLE_FLAG_TIME_SEC = "multi_flag_time";
+	public static final String MULTIPLE_FLAG_TIME_MIN = "multi_flag_time";
+	
+	public static final String ALPHA_SETTING = "alpha";
 	
 	public static final String FEEDBACK = "feedback";
 	public static final String CREDITS = "credits";
 	
 	private SharedPreferences prefs;
-	private Preference flagTimePref;
+	private Preference flagTimePref, skyBackgroundPreference, alphaPreference, flagImagePreference;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,26 +49,18 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 		
 		prefs.registerOnSharedPreferenceChangeListener(this);
 		
-		findPreference(SINGLE_FLAG_IMAGE_SETTING).setOnPreferenceClickListener(this);
+		flagImagePreference = findPreference(SINGLE_FLAG_IMAGE_SETTING);
+		flagImagePreference.setOnPreferenceClickListener(this);
 		findPreference(FEEDBACK).setOnPreferenceClickListener(this);
 		findPreference(CREDITS).setOnPreferenceClickListener(this);
-		findPreference(SKY_MODE_BACKGROUND_IMAGE).setOnPreferenceClickListener(this);
-		findPreference("default").setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				Editor editor = prefs.edit(); 
-				editor.clear();
-				editor.commit();
-				Intent intent = getIntent();
-				overridePendingTransition(0, 0);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-				finish();
-				overridePendingTransition(0, 0);
-				startActivity(intent);
-				return true;
-			}
-		});
+		
+		alphaPreference = findPreference(ALPHA_SETTING);
+		skyBackgroundPreference = findPreference(SKY_MODE_BACKGROUND_IMAGE);
+		skyBackgroundPreference.setOnPreferenceClickListener(this);
+		flagTimePref = findPreference(MULTIPLE_FLAG_TIME_MIN);
+		findPreference("default").setOnPreferenceClickListener(this);
+		
+		changeEnability();
 	}
 
 	@Override
@@ -88,12 +82,23 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 			startActivity(intent);
 			return true;
 		}else if(key.equals(CREDITS)){
-			Intent intent = new Intent(this, MultipleWallpaperChooser.class);
+			Intent intent = new Intent(this, CreditsActivity.class);
 			startActivity(intent);
 			return true;
 		}else if(key.equals(SKY_MODE_BACKGROUND_IMAGE)){
 			Intent intent = new Intent(this, WallpaperChooser.class);
 			intent.putExtra(SKY_MODE_BACKGROUND_IMAGE, true);
+			startActivity(intent);
+			return true;
+		}else if(key.equals("default")){
+			Editor editor = prefs.edit(); 
+			editor.clear();
+			editor.commit();
+			Intent intent = getIntent();
+			overridePendingTransition(0, 0);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+			finish();
+			overridePendingTransition(0, 0);
 			startActivity(intent);
 			return true;
 		}
@@ -127,8 +132,24 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 			else 
 				DayTimeAlarmManager.stop();
 		}
+		changeEnability();
 	}
 
-	
+	private void changeEnability(){
+		if(prefs.getString(FLAG_MODE_SETTING, FLAG_MODE_SETTING).equals(FLAG_MODE_FULLSCREEN)){
+			alphaPreference.setEnabled(false);
+			skyBackgroundPreference.setEnabled(false);
+		}else{
+			alphaPreference.setEnabled(true);
+			skyBackgroundPreference.setEnabled(true);
+		}
+		if(prefs.getString(FLAG_IMAGE_SETTING, SINGLE_FLAG_IMAGE_SETTING).equals(SINGLE_FLAG_IMAGE_SETTING)){
+			flagTimePref.setEnabled(false);
+			flagImagePreference.setTitle(R.string.strSelectFlagSng);
+		}else{
+			flagImagePreference.setTitle(R.string.strSelectFlagPlr);
+			flagTimePref.setEnabled(true);
+		}
+	}
 	
 }

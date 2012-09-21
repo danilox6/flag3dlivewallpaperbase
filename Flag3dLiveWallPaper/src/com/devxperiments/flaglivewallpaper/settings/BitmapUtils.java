@@ -18,8 +18,9 @@ import android.graphics.RectF;
 import android.view.Display;
 
 public class BitmapUtils {
-	
-	private static Bitmap userBitmap = null;
+
+	private static Bitmap portraitUserBitmap = null;
+	private static Bitmap landscapeUserBitmap = null;
 	private static int bestFittingScreenPow = 0;
 
 	public static class BitmapDataObject implements Serializable {
@@ -41,19 +42,19 @@ public class BitmapUtils {
 		BitmapDataObject bitmapDataObject = (BitmapDataObject)in.readObject();
 		return BitmapFactory.decodeByteArray(bitmapDataObject.imageByteArray, 0, bitmapDataObject.imageByteArray.length);
 	}
-	
-	private static Bitmap loadBitmap(Context context) {
+
+	private static Bitmap loadBitmap(Context context, boolean portrait) {
 		try {
-			ObjectInputStream ois = new ObjectInputStream(context.openFileInput("userBitmapFile"));
+			ObjectInputStream ois = new ObjectInputStream(context.openFileInput(portrait?"portraitBitmapFile":"landscapeBitmapFile"));
 			return readBitmapObject(ois);
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
-	private static void saveBitmap(Context context, Bitmap bitmap) {
+	private static void saveBitmap(Context context, Bitmap bitmap, boolean portrait) {
 		try {
-			FileOutputStream fos = context.openFileOutput("userBitmapFile", Context.MODE_PRIVATE);
+			FileOutputStream fos = context.openFileOutput(portrait?"portraitBitmapFile":"landscapeBitmapFile", Context.MODE_PRIVATE);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			writeBitmapObject(bitmap, oos);
 		} catch (FileNotFoundException e) {
@@ -62,24 +63,35 @@ public class BitmapUtils {
 			e.printStackTrace();
 		}
 	}
-	
-	public static Bitmap getUserBitmap(Context context){
-		if(userBitmap == null)
-			userBitmap = loadBitmap(context);
-		return userBitmap;
-	}
-	
-	public static void setUserBitmap(Context context, Bitmap bitmap){
-		userBitmap = bitmap;
-		if(bitmap!=null)
-			saveBitmap(context, bitmap);
-	}
-	
-	public static void freeBitmap(){
-		userBitmap = null;
-		System.gc();
+
+	public static Bitmap getUserBitmap(Context context, boolean portrait){
+		if(portrait && portraitUserBitmap == null)
+			portraitUserBitmap = loadBitmap(context, portrait);
+		else if(!portrait && landscapeUserBitmap == null)
+			landscapeUserBitmap = loadBitmap(context, portrait);
+		return portrait?portraitUserBitmap:landscapeUserBitmap;
 	}
 
+	public static void setUserBitmap(Context context, Bitmap bitmap, boolean portrait){
+		if(portrait)
+			portraitUserBitmap = bitmap;
+		else
+			landscapeUserBitmap = bitmap;
+		if(bitmap!=null)
+			saveBitmap(context, bitmap, portrait);
+	}
+
+	public static void freeBitmaps(){
+		if(portraitUserBitmap!=null){
+			portraitUserBitmap.recycle();
+			portraitUserBitmap = null;
+		}
+		if(landscapeUserBitmap!=null){
+			landscapeUserBitmap.recycle();
+			landscapeUserBitmap = null;
+		}
+		System.gc();
+	}
 
 	public static Bitmap scaleCenterCrop(Bitmap source, int newHeight, int newWidth) {
 		int sourceWidth = source.getWidth();
@@ -204,19 +216,19 @@ public class BitmapUtils {
 		}
 		return bestFittingScreenPow;
 	}
-	
+
 	public static int getBestFittingScreenPow(Display display){
 		return getBestFittingScreenPow(display.getWidth(), display.getHeight());		
 	}
-	
+
 	/**
 	 * Ritorna 2^power
 	 */
 	private static int twoPower(int power) {
-	    int result = 1;
-	    for (int i = 0; i < power; i++)
-	        result *= 2;
-	    return result;
+		int result = 1;
+		for (int i = 0; i < power; i++)
+			result *= 2;
+		return result;
 	}
 
 

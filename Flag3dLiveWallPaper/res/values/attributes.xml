@@ -13,8 +13,7 @@
         <item>single_flag</item>
         <item>multi_flag</item>
     </string-array>
-    
-       <string-array name="pref_flag_mode_entries">
+    <string-array name="pref_flag_mode_entries">
         <item>Fullscreen</item>
         <item>Sky</item>
     </string-array>
@@ -22,5 +21,14 @@
         <item>flag_fullscreen</item>
         <item>flag_sky</item>
     </string-array>
+
+    <declare-styleable name="SliderView">
+        <attr name="multiplier" format="float" />
+        <attr name="conversion" format="float" />
+        <attr name="minValue" format="integer" />
+        <attr name="maxValue" format="integer" />
+        <attr name="value" format="integer" />
+        <attr name="format" format="string" />
+    </declare-styleable>
 
 </resources>

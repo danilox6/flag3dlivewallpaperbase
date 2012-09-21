@@ -38,9 +38,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.StatFs;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -48,7 +46,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
+import android.widget.TextView;
 
 
 
@@ -58,9 +56,6 @@ import android.widget.Toast;
 public class CropImage extends Activity {
 	private static final String TAG = "CropImage";
 
-	// These are various options can be specified in the intent.
-	//	private Bitmap.CompressFormat mOutputFormat = Bitmap.CompressFormat.JPEG; // only used with mSaveUri
-	//	private Uri mSaveUri = null;
 	private int mAspectX, mAspectY;
 	private final Handler mHandler = new Handler();
 
@@ -73,9 +68,9 @@ public class CropImage extends Activity {
 	private CropImageView mImageView;
 	private ContentResolver mContentResolver;
 
-	private Bitmap mBitmap;
+	private static Bitmap mBitmap;
 	HighlightView mCrop;
-
+	private boolean orientation;
 
 	private String mImagePath;
 
@@ -89,48 +84,40 @@ public class CropImage extends Activity {
 
 		mImageView = (CropImageView) findViewById(R.id.image);
 
-		showStorageToast(this);
-
-		BitmapUtils.freeBitmap();
-
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
 		if (extras != null) {
 
 			mImagePath = extras.getString("image-path");
-			Log.e("URI", mImagePath);
+			orientation = extras.getBoolean("orientation");
 
-			//			mSaveUri = getImageUri(mImagePath);
-
-
-			//			mAspectX = extras.getInt("aspectX");
-			//			mAspectY = extras.getInt("aspectY");
-			//			mOutputX = extras.getInt("outputX");
-			//			mOutputY = extras.getInt("outputY");
-			//			mAspectX = 1;
-			//			mAspectY = 1;
-			//			mOutputX = 512;
-			//			mOutputY = 512;
 			Display display = getWindowManager().getDefaultDisplay();
 
-			if(display.getHeight()>display.getWidth()){
-				mAspectX = display.getWidth();
-				mAspectY = display.getHeight();
-			}
-			else{
-				mAspectY = display.getWidth();
-				mAspectX = display.getHeight();	
+			if(orientation){
+				if(display.getHeight()>display.getWidth()){
+					mAspectX = display.getWidth();
+					mAspectY = display.getHeight();
+				}
+				else{
+					mAspectY = display.getWidth();
+					mAspectX = display.getHeight();	
+				}
+			}else{
+				if(display.getHeight()<display.getWidth()){
+					mAspectX = display.getWidth();
+					mAspectY = display.getHeight();
+				}
+				else{
+					mAspectY = display.getWidth();
+					mAspectX = display.getHeight();	
+				}
 			}
 
 			mOutputX = mOutputY = BitmapUtils.getBestFittingScreenPow(display);
-			Log.e("Ma che oh",mAspectX+"x"+mAspectY);
-
-			//			mAspectX = 1;
-			//			mAspectY = 1;
-
 		}
 
-		mBitmap = getBitmap(mImagePath);
+		if(orientation)
+			mBitmap = getBitmap(mImagePath);
 
 		Log.e("BITMAP SIZE", mBitmap.getWidth() +"x"+ mBitmap.getHeight());
 
@@ -157,6 +144,8 @@ public class CropImage extends Activity {
 						onSaveClicked();
 					}
 				});
+		
+		((TextView) findViewById(R.id.txtCrop)).setText(orientation?"Croppa Portrait":"Croppa Landscape"); //FIXME Extern
 
 
 		startFaceDetection();
@@ -199,7 +188,7 @@ public class CropImage extends Activity {
 		}
 		return null;
 	}
-	
+
 	private Bitmap getBitmap(String path){
 		OutOfMemoryError exception;
 		int exp = 11;
@@ -225,9 +214,6 @@ public class CropImage extends Activity {
 
 
 	private void onSaveClicked() {
-		// TODO this code needs to change to use the decode/crop/encode single
-		// step api so that we don't require that the whole (possibly large)
-		// bitmap doesn't have to be read into memory
 		if (mSaving) return;
 
 		if (mCrop == null) {
@@ -258,21 +244,17 @@ public class CropImage extends Activity {
 		croppedImage = BitmapUtils.transform(new Matrix(), croppedImage, mAspectX, mAspectY, true);
 		if (old != croppedImage) 
 			old.recycle();
-		
+
 		Log.e("SCALED", croppedImage.getWidth()+"x"+croppedImage.getHeight());
 
 		/* Don't scale the image crop it to the size requested.
 		 * Create an new image with the cropped image in the center and
 		 * the extra space filled.
 		 */
-
-		// Don't scale the image but instead fill it so it's the
-		// required dimension
-		Bitmap b = Bitmap.createBitmap(mOutputX, mOutputY,
-				Bitmap.Config.RGB_565);
+		Bitmap b = Bitmap.createBitmap(mOutputX, mOutputY, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(b);
 
-//		Rect srcRect = mCrop.getCropRect();
+		//		Rect srcRect = mCrop.getCropRect();
 		Rect srcRect = new Rect(0,0,mAspectX,mAspectY);
 		Rect dstRect = new Rect(0, 0, mOutputX, mOutputY);
 
@@ -292,28 +274,20 @@ public class CropImage extends Activity {
 		croppedImage.recycle();
 		croppedImage = b;
 
-
-
-		Log.e("CROPPED", croppedImage.getWidth()+"x"+croppedImage.getHeight());
-
-		// Return the cropped image directly or save it to the specified URI.
-		Bundle myExtras = getIntent().getExtras();
-		if (myExtras != null && (myExtras.getParcelable("data") != null|| myExtras.getBoolean("return-data"))) {
-			//			Bundle extras = new Bundle();
-			//			extras.putParcelable("data", croppedImage);
-			Log.e("YAY", "yes");
-			BitmapUtils.setUserBitmap(FlagWallpaperService.context, croppedImage);
-			//			setResult(RESULT_OK,new Intent().putExtra("data", croppedImage));
-			setResult(RESULT_OK);
-			finish();
-		} else {
-			//			final Bitmap b = croppedImage;
-			//			Util.startBackgroundJob(this, null,"Saving image",	new Runnable() {
-			//				public void run() {
-			//					saveOutput(b);
-			//				}
-			//			}, mHandler);
+		BitmapUtils.setUserBitmap(FlagWallpaperService.context, croppedImage, orientation);
+		if(orientation){
+			Intent intent = new Intent(this, CropImage.class);
+			intent.putExtra("image-path", mImagePath);
+			intent.putExtra("orientation", false);
+			startActivity(intent);
 		}
+		if(orientation){
+			setResult(RESULT_OK);
+		}else{
+			mBitmap.recycle();
+			mBitmap = null;
+		}
+		finish();
 	}
 
 	private static int pow(int base, int power) {
@@ -323,30 +297,6 @@ public class CropImage extends Activity {
 		return result;
 	}
 
-	//	private void saveOutput(Bitmap croppedImage) {
-	//		if (mSaveUri != null) {
-	//			OutputStream outputStream = null;
-	//			try {
-	//				outputStream = mContentResolver.openOutputStream(mSaveUri);
-	//				if (outputStream != null) {
-	//					croppedImage.compress(mOutputFormat, 75, outputStream);
-	//				}
-	//			} catch (IOException ex) {
-	//				// TODO: report error to caller
-	//				Log.e(TAG, "Cannot open file: " + mSaveUri, ex);
-	//			} finally {
-	//				Util.closeSilently(outputStream);
-	//			}
-	//			Bundle extras = new Bundle();
-	//			setResult(RESULT_OK, new Intent(mSaveUri.toString())
-	//			.putExtras(extras));
-	//		} else {
-	//			Log.e(TAG, "not defined image url");
-	//		}
-	//		croppedImage.recycle();
-	//		finish();
-	//	}
-
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -355,7 +305,7 @@ public class CropImage extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		mBitmap.recycle();
+//		mBitmap.recycle();
 	}
 
 
@@ -433,53 +383,6 @@ public class CropImage extends Activity {
 			});
 		}
 	};
-
-	public static final int NO_STORAGE_ERROR = -1;
-	public static final int CANNOT_STAT_ERROR = -2;
-
-	public static void showStorageToast(Activity activity) {
-		showStorageToast(activity, calculatePicturesRemaining());
-	}
-
-	public static void showStorageToast(Activity activity, int remaining) {
-		String noStorageText = null;
-
-		if (remaining == NO_STORAGE_ERROR) {
-			String state = Environment.getExternalStorageState();
-			if (state == Environment.MEDIA_CHECKING) {
-				noStorageText = "Preparing card";
-			} else {
-				noStorageText = "No storage card";
-			}
-		} else if (remaining < 1) {
-			noStorageText = "Not enough space";
-		}
-
-		if (noStorageText != null) {
-			Toast.makeText(activity, noStorageText, Toast.LENGTH_LONG).show();
-		}
-	}
-
-	public static int calculatePicturesRemaining() {
-		try {
-			/*if (!ImageManager.hasStorage()) {
-                return NO_STORAGE_ERROR;
-            } else {*/
-			String storageDirectory =
-					Environment.getExternalStorageDirectory().toString();
-			StatFs stat = new StatFs(storageDirectory);
-			float remaining = ((float) stat.getAvailableBlocks()
-					* (float) stat.getBlockSize()) / 400000F;
-			return (int) remaining;
-			//}
-		} catch (Exception ex) {
-			// if we can't stat the filesystem then we don't know how many
-			// pictures are remaining.  it might be zero but just leave it
-			// blank since we really don't know.
-			return CANNOT_STAT_ERROR;
-		}
-	}
-
 
 
 }
