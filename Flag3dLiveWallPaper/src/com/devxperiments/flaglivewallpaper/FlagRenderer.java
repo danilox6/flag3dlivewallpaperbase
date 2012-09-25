@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.AssetManager;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -47,7 +46,6 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 	private boolean isSingleFlagSet, imagePreferenceUpdated, modePreferenceUpdated;
 	private boolean userBackPrefUpdated;
 	private static boolean dayTimeUpdated;
-	private static boolean orientation;
 
 	private int width, height;
 
@@ -59,7 +57,6 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		isSingleFlagSet = false;
 		userBackPrefUpdated = false;
 		width = height = 512;
-		orientation = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
 		//		if(prefs.getBoolean(Settings.DAY_TIME_SKY_BACKGROUND, true) && !DayTimeAlarmManager.isRunning())
 		//			DayTimeAlarmManager.start(context);
@@ -72,11 +69,12 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 	public void onDrawFrame(GL10 gl) {
 
 		if(texture!=null){
+			Log.e("TEXTURE", "Texture to show: "+texture);
 			FlagManager.loadTexture(texture);
 			String oldTexture = flag.getUserObject()==null? null:((String)flag.getUserObject())+"";
 			flag.setTexture(texture);
 			flag.setUserObject(texture);
-			if(oldTexture!=null)
+			if(oldTexture!=null && TextureManager.getInstance().containsTexture(oldTexture))
 				TextureManager.getInstance().removeTexture(oldTexture);
 			texture = null;
 		}
@@ -87,8 +85,9 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 				background = DayTimeAlarmManager.getAttualDayTimeString();
 			else
 				background = prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day");
+			if(background.equals(Settings.SKY_USER_BACKGROUND))
+				background += height>width?"_portrait":"_landscape";
 			FlagManager.loadTexture(background);
-			//FIXME Forse non serve adattare in modalità portrait
 			framebuffer.blit(TextureManager.getInstance().getTexture(background),
 					(BitmapUtils.getBestFittingScreenPow(width,height)-width)/2,
 					(BitmapUtils.getBestFittingScreenPow(width,height)-height)/2,
@@ -103,8 +102,6 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, final int screenWidth, final int screenHeight) {
-		long startMillis = System.currentTimeMillis();
-
 		width = screenWidth;
 		height = screenHeight;
 
@@ -112,23 +109,20 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 			framebuffer.dispose();
 
 		framebuffer = new FrameBuffer(gl, screenWidth, screenHeight);
-		Log.e("CHANGE SURFACE TIME", "Tempo ms:"+(System.currentTimeMillis()-startMillis));
 		if(world==null || modePreferenceUpdated){
 			modePreferenceUpdated = false;
 			drawScene();
 			isSingleFlagSet = false;
 		}
 
-		/**
-		 * FIXME Sta roba è lenta forse è meglio caricare entrambi le textures 
-		 */
-		if(userBackPrefUpdated || (orientation != screenHeight > screenWidth) && prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day").equals(Settings.SKY_USER_BACKGROUND)){
-			Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context, screenHeight>screenWidth);
-			if(TextureManager.getInstance().containsTexture(Settings.SKY_USER_BACKGROUND)){
-				TextureManager.getInstance().unloadTexture(framebuffer, TextureManager.getInstance().getTexture(Settings.SKY_USER_BACKGROUND));
-				TextureManager.getInstance().replaceTexture(Settings.SKY_USER_BACKGROUND, new Texture(bitmap));
-			}else
-				TextureManager.getInstance().addTexture(Settings.SKY_USER_BACKGROUND, new Texture(bitmap));
+		boolean userBackground = prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day").equals(Settings.SKY_USER_BACKGROUND);
+		if((userBackPrefUpdated && userBackground) || (userBackground && !TextureManager.getInstance().containsTexture(Settings.SKY_USER_BACKGROUND+"_portrait"))){
+			try{
+				loadUserBanckgroundTexture(Settings.SKY_USER_BACKGROUND+"_portrait", BitmapUtils.getUserBitmap(FlagWallpaperService.context, true));
+				loadUserBanckgroundTexture(Settings.SKY_USER_BACKGROUND+"_landscape", BitmapUtils.getUserBitmap(FlagWallpaperService.context, false));
+			}catch (NullPointerException e) {
+				prefs.edit().putString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day");
+			}
 			TextureManager.getInstance().compress();
 			userBackPrefUpdated = false;
 			BitmapUtils.freeBitmaps();
@@ -145,9 +139,8 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 				updateFlagTask.cancel();
 			updateFlagTask = null;
 			String texture = prefs.getString(Settings.SINGLE_FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
-			Log.e("TEXTURE_STRONZA", texture);
-			this.texture = getAppropriateFlag(texture, screenWidth, screenHeight);
 
+			this.texture = getAppropriateFlag(texture, screenWidth, screenHeight);
 			imagePreferenceUpdated = false;
 			isSingleFlagSet = true;
 			//			changeFlagTexture(texture, screenWidth, screenHeight);
@@ -177,21 +170,25 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 			updateFlagTimer.schedule(updateFlagTask, timeMillis, timeMillis);
 		}
 
-		if(modePreferenceUpdated)
-			if(prefs.getString(Settings.FLAG_MODE_SETTING, Settings.FLAG_MODE_FULLSCREEN).equals(Settings.FLAG_MODE_SKY)){
-				int transparency = 15 - Math.round(prefs.getFloat(Settings.ALPHA_SETTING, -1F));
-				flag.setTransparency(transparency);
-				if(pole!=null)
-					pole.setTransparency(transparency);
-			}else{
-				flag.setTransparency(-1);
-				if(pole!=null)
-					pole.setTransparency(-1);
-			}
+		if(prefs.getString(Settings.FLAG_MODE_SETTING, Settings.FLAG_MODE_FULLSCREEN).equals(Settings.FLAG_MODE_SKY)){
+			int transparency = 15 - Math.round(prefs.getFloat(Settings.ALPHA_SETTING, -1F));
+			flag.setTransparency(transparency);
+			if(pole!=null)
+				pole.setTransparency(transparency);
+		}else{
+			flag.setTransparency(-1);
+			if(pole!=null)
+				pole.setTransparency(-1);
+		}
 
-		orientation = screenHeight > screenWidth;
-
-		Log.e("CHANGE SURFACE TIME", "Tempo ms:"+(System.currentTimeMillis()-startMillis));
+	}
+	
+	private void loadUserBanckgroundTexture(String textname,Bitmap bitmap){
+		if(TextureManager.getInstance().containsTexture(textname)){
+			TextureManager.getInstance().unloadTexture(framebuffer, TextureManager.getInstance().getTexture(textname));
+			TextureManager.getInstance().replaceTexture(textname, new Texture(bitmap));
+		}else
+			TextureManager.getInstance().addTexture(textname, new Texture(bitmap));
 	}
 
 	public void release() {
@@ -255,7 +252,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 	}
 
 
-	public String getAppropriateFlag(String texture, int screenWidth, int screenHeight){
+	private String getAppropriateFlag(String texture, int screenWidth, int screenHeight){
 		if (screenWidth > screenHeight)
 			texture = FlagManager.toLandscape(texture);
 		else
@@ -282,6 +279,5 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 	public static void updateDayTimeBackground() {
 		dayTimeUpdated = true;	
 	}
-
 
 }

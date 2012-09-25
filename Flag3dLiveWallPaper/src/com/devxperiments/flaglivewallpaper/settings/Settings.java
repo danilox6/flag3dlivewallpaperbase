@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.devxperiments.flaglivewallpaper.DayTimeAlarmManager;
 import com.devxperiments.flaglivewallpaper.FlagManager;
-import com.devxperiments.flaglivewallpaper.FlagWallpaperService;
 import com.devxperiments.flaglivewallpaper.R;
 
 import android.content.Intent;
@@ -126,12 +124,12 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-		if(key.equals(DAY_TIME_SKY_BACKGROUND)){
-			if(prefs.getBoolean(DAY_TIME_SKY_BACKGROUND, true))
-				DayTimeAlarmManager.start(FlagWallpaperService.context);
-			else 
-				DayTimeAlarmManager.stop();
-		}
+//		if(key.equals(DAY_TIME_SKY_BACKGROUND)){
+//			if(prefs.getBoolean(DAY_TIME_SKY_BACKGROUND, true))
+//				DayTimeAlarmManager.start(FlagWallpaperService.context);
+//			else 
+//				DayTimeAlarmManager.stop();
+//		}
 		changeEnability();
 	}
 

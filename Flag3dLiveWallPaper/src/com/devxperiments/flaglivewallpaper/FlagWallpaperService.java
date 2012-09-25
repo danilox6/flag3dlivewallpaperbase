@@ -6,11 +6,19 @@ import net.rbgrn.android.glwallpaperservice.*;
 
 public class FlagWallpaperService extends GLWallpaperService {
 	public static Context context;
+	public static boolean PRO = true; 
+	private String defPackcage;
 	
+//	public FlagWallpaperService() {
+//		super();
+//		 context = this;
+//		 defPackcage = "com.devxperiments.flaglivewallpaper";
+//	}
 	
-	public FlagWallpaperService() {
+	public FlagWallpaperService(String defPackage){
 		super();
-		 context = this;
+		context = this;
+		this.defPackcage = defPackage;
 	}
 
 	public Engine onCreateEngine() {
@@ -25,7 +33,7 @@ public class FlagWallpaperService extends GLWallpaperService {
 		public MyEngine() {
 			super();
 			
-			FlagManager.inizialize();
+			FlagManager.inizialize(defPackcage);
 			
 			renderer = new FlagRenderer(context);
 			setRenderer(renderer);

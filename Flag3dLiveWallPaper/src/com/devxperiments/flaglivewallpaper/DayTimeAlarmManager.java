@@ -25,14 +25,14 @@ public class DayTimeAlarmManager extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		FlagRenderer.updateDayTimeBackground();
-		Log.e("ALARM", "alarm");
+//		Log.e("ALARM", "alarm");
 		setNextAlarm();
 	}
 	
 	public static void start(Context context){
-//		if(pendingIntent==null)
-//			inizialize(context);
-//		setNextAlarm();
+		if(pendingIntent==null)
+			inizialize(context);
+		setNextAlarm();
 	}
 
 	private static void inizialize(Context context){
@@ -48,7 +48,7 @@ public class DayTimeAlarmManager extends BroadcastReceiver{
 
 		long nextAlarm = calendars.get(nextAlarmIndex).getTimeInMillis();// - current.getTimeInMillis();
 
-		Log.e("TIME", nextAlarm+"");
+//		Log.e("TIME", nextAlarm+"");
 		
 		alarmManager.set(AlarmManager.RTC, nextAlarm, pendingIntent);
 		isRunning = true;
@@ -92,7 +92,7 @@ public class DayTimeAlarmManager extends BroadcastReceiver{
 		
 		Collections.sort(calendars);
 		
-		Log.i("DAYTIME",dump(calendars));
+//		Log.i("DAYTIME",dump(calendars));
 		
 		for(int currentIndex = 0; currentIndex<5; currentIndex++)
 			if(calendars.get(currentIndex).equals(current))
@@ -133,6 +133,7 @@ public class DayTimeAlarmManager extends BroadcastReceiver{
 		return current;
 	}
 	
+	@SuppressWarnings("unused")
 	private static String dump(List<Calendar> calendars){
 		String log = "";
 		for(Calendar c: calendars){

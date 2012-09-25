@@ -27,7 +27,7 @@ public class FlagManager {
 	private static final String SYSTEM_RES = "sys_";
 
 	@SuppressWarnings("rawtypes")
-	public static void inizialize(){
+	public static void inizialize(String defPackage){
 		flagIds = new HashMap<String, Integer>();
 		Class resources = R.drawable.class;
 		Field[] fields = resources.getFields();
@@ -61,9 +61,11 @@ public class FlagManager {
 				if(name.startsWith(DEFAULT))
 					defaultFlag = name;
 
-				int id = FlagWallpaperService.context.getResources().getIdentifier(name, "drawable", "com.devxperiments.flaglivewallpaper");
+				int id = FlagWallpaperService.context.getResources().getIdentifier(name, "drawable", defPackage);
 
-//				if(!name.startsWith(SKY))
+
+				Log.e("RESOURCE","Res: "+ name + " "+id);
+				//				if(!name.startsWith(SKY))
 				flagIds.put(name, id);
 
 				if((loadBackground && name.startsWith(backgroundToLoad)) || (loadDefault && name.startsWith(DEFAULT)) || (flagToLoad!= null && name.startsWith(flagToLoad)))
@@ -85,21 +87,32 @@ public class FlagManager {
 	}
 
 	private static void loadTexture(String textureName, int id){
-		Bitmap texture = BitmapHelper.convert(FlagWallpaperService.context.getResources().getDrawable(id));
-		loadTexture(textureName, texture);
+		int count = 0;
+		OutOfMemoryError exc = null;
+		do{
+			try{
+				Bitmap texture = BitmapHelper.convert(FlagWallpaperService.context.getResources().getDrawable(id));
+				loadTexture(textureName, texture);
+			}catch (OutOfMemoryError e) {
+				Log.e("EXCEPTION", "OutOfMemory!!!");
+				exc = e;
+			}
+		}while(exc!=null || ++count<5);
+
 	}
-	
+
 	public static void loadTexture(String textureName){
-		
-		if(textureName.equals(Settings.SKY_USER_BACKGROUND))
-			loadUserTexture();
-		else if(!TextureManager.getInstance().containsTexture(textureName))
-			loadTexture(textureName, flagIds.get(textureName));
+		if(!TextureManager.getInstance().containsTexture(textureName)){
+			if(textureName.startsWith(Settings.SKY_USER_BACKGROUND))
+				loadUserTexture();
+			else
+				loadTexture(textureName, flagIds.get(textureName));
+		}
 	}
 
 	private static void loadTexture(String textureName, Bitmap texture){
 		if(!TextureManager.getInstance().containsTexture(textureName)){
-			Log.e("TEXTURE", textureName);
+			Log.e("TEXTURE", "Loaded texture: "+textureName);
 			TextureManager.getInstance().addTexture(textureName, new Texture(texture));
 		}
 	}
@@ -133,8 +146,8 @@ public class FlagManager {
 	}
 
 	public static String getDefaultFlag(){
-		if(defaultFlag == null)
-			inizialize();
+		//		if(defaultFlag == null)
+		//			inizialize();
 		return defaultFlag;
 	}
 

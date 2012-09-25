@@ -89,12 +89,8 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 
 				if(skyBackground && flagId == R.drawable.sys_btn_add){
 
-					//					if(prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day").equals(Settings.SKY_USER_BACKGROUND)){
-					//						
-					//					}
-
 					txtInfo.setVisibility(View.VISIBLE);
-					txtInfo.setText("Clicca l'immagine per caricare una foto"); //FIXME externalizzare
+					txtInfo.setText("Clicca l'immagine per caricare una foto"); //FIXME esternalizzare
 
 					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context, portrait);
 					if(bitmap == null)
@@ -169,7 +165,6 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		try{
-			Log.e("CI SONO", "sto qua");
 			if(resultCode == RESULT_OK){
 				switch (requestCode) {
 				case PICKED_IMAGE:

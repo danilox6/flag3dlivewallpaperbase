@@ -16,8 +16,6 @@
  */
 package it.unisannio.aroundme.widgets;
 
-import java.text.MessageFormat;
-
 import com.devxperiments.flaglivewallpaper.R;
 
 import android.content.Context;

@@ -12,7 +12,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.Display;
@@ -65,18 +68,19 @@ public class BitmapUtils {
 	}
 
 	public static Bitmap getUserBitmap(Context context, boolean portrait){
-		if(portrait && portraitUserBitmap == null)
-			portraitUserBitmap = loadBitmap(context, portrait);
-		else if(!portrait && landscapeUserBitmap == null)
-			landscapeUserBitmap = loadBitmap(context, portrait);
-		return portrait?portraitUserBitmap:landscapeUserBitmap;
+		return loadBitmap(context, portrait);
+//		if(portrait && portraitUserBitmap == null)
+//			portraitUserBitmap = loadBitmap(context, portrait);
+//		else if(!portrait && landscapeUserBitmap == null)
+//			landscapeUserBitmap = loadBitmap(context, portrait);
+//		return portrait?portraitUserBitmap:landscapeUserBitmap;
 	}
 
 	public static void setUserBitmap(Context context, Bitmap bitmap, boolean portrait){
-		if(portrait)
-			portraitUserBitmap = bitmap;
-		else
-			landscapeUserBitmap = bitmap;
+//		if(portrait)
+//			portraitUserBitmap = bitmap;
+//		else
+//			landscapeUserBitmap = bitmap;
 		if(bitmap!=null)
 			saveBitmap(context, bitmap, portrait);
 	}
@@ -231,5 +235,20 @@ public class BitmapUtils {
 		return result;
 	}
 
+	public static Bitmap toGrayscale(Bitmap bmpOriginal)
+    {        
+        int width, height;
+        height = bmpOriginal.getHeight();
+        width = bmpOriginal.getWidth();    
 
+        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        Canvas c = new Canvas(bmpGrayscale);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(bmpOriginal, 0, 0, paint);
+        return bmpGrayscale;
+    }
 }

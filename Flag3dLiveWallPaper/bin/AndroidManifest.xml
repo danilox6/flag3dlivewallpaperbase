@@ -24,27 +24,27 @@
         </service>
 
         <activity
-            android:name=".settings.Settings"
+            android:name="com.devxperiments.flaglivewallpaper.settings.Settings"
             android:exported="true"
             android:label="Setting" >
         </activity>
         <activity
-            android:name=".settings.WallpaperChooser"
+            android:name="com.devxperiments.flaglivewallpaper.settings.WallpaperChooser"
             android:label="@string/strSelectFlagSng"
             android:theme="@android:style/Theme.Light" >
         </activity>
         <activity
-            android:name=".settings.MultipleWallpaperChooser"
+            android:name="com.devxperiments.flaglivewallpaper.settings.MultipleWallpaperChooser"
             android:label="@string/strSelectFlagPlr"
             android:theme="@android:style/Theme.Light" >
         </activity>
         <activity
-            android:name=".settings.CreditsActivity"
+            android:name="com.devxperiments.flaglivewallpaper.settings.CreditsActivity"
             android:label="@string/strCredits"
             android:theme="@android:style/Theme.Light" >
         </activity>
         <activity
-            android:name=".settings.FeedbackActivity"
+            android:name="com.devxperiments.flaglivewallpaper.settings.FeedbackActivity"
             android:label="Feedback"
             android:theme="@android:style/Theme.Light" >
         </activity>
@@ -55,7 +55,7 @@
             android:theme="@android:style/Theme.Light" >
         </activity>
 
-        <receiver android:name=".DayTimeAlarmManager" >
+        <receiver android:name="com.devxperiments.flaglivewallpaper.DayTimeAlarmManager" >
         </receiver>
     </application>
 

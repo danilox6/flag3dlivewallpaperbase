@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- xmlns:aroundme="http://schemas.android.com/apk/res/com.devxperiments.flaglivewallpaper" -->
 <it.unisannio.aroundme.widgets.SliderView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aroundme="http://schemas.android.com/apk/res/com.devxperiments.flaglivewallpaper"
+    xmlns:aroundme="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="10dp"
@@ -8,3 +9,4 @@
     aroundme:maxValue="15"
     aroundme:minValue="0"
  />
+

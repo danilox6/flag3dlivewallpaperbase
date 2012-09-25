@@ -17,7 +17,6 @@
 package com.droid4you.util.cropimage;
 
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -119,10 +118,8 @@ public class CropImage extends Activity {
 		if(orientation)
 			mBitmap = getBitmap(mImagePath);
 
-		Log.e("BITMAP SIZE", mBitmap.getWidth() +"x"+ mBitmap.getHeight());
 
 		if (mBitmap == null) {
-			Log.d(TAG, "finish!!!");
 			finish();
 			return;
 		}
@@ -181,8 +178,6 @@ public class CropImage extends Activity {
 			in.close();
 
 			return b;
-		} catch (FileNotFoundException e) {
-			Log.e(TAG, "file " + path + " not found");
 		} catch (IOException e) {
 			Log.e(TAG, "file " + path + " not found");
 		}
@@ -245,7 +240,6 @@ public class CropImage extends Activity {
 		if (old != croppedImage) 
 			old.recycle();
 
-		Log.e("SCALED", croppedImage.getWidth()+"x"+croppedImage.getHeight());
 
 		/* Don't scale the image crop it to the size requested.
 		 * Create an new image with the cropped image in the center and
@@ -274,6 +268,9 @@ public class CropImage extends Activity {
 		croppedImage.recycle();
 		croppedImage = b;
 
+		Log.e("CROP", "Cropped: "+croppedImage.getWidth()+"x"+croppedImage.getHeight());
+		
+		
 		BitmapUtils.setUserBitmap(FlagWallpaperService.context, croppedImage, orientation);
 		if(orientation){
 			Intent intent = new Intent(this, CropImage.class);
