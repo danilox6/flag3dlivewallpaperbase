@@ -20,13 +20,16 @@ import com.devxperiments.flaglivewallpaper.R;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
+import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 
 // This class is used by CropImage to display a highlighted cropping rectangle
@@ -79,6 +82,15 @@ class HighlightView {
 			return;
 		}
 		canvas.save();
+		
+		RectF rectPortrait = new RectF(mDrawRect);
+		float relWidth = ((mDrawRect.right - mDrawRect.left) - (mDrawRect.right - mDrawRect.left) * (float) Math.pow(screenRatio,-1))/2;
+		rectPortrait.left +=  relWidth;
+		rectPortrait.right -= relWidth;
+		RectF rectLandscape = new RectF(mDrawRect);
+		rectLandscape.top += relWidth;
+		rectLandscape.bottom -= relWidth;
+		
 		Path path = new Path();
 		if (!hasFocus()) {
 			mOutlinePaint.setColor(0xFF000000);
@@ -93,14 +105,30 @@ class HighlightView {
 						+ (height / 2), width / 2, Path.Direction.CW);
 				mOutlinePaint.setColor(0xFFEF04D6);
 			} else {
-				path.addRect(new RectF(mDrawRect), Path.Direction.CW);
-				mOutlinePaint.setColor(0xFFFF8A00);
+				path.addRect(new RectF(rectLandscape), Path.Direction.CW);
+				path.addRect(new RectF(rectPortrait), Path.Direction.CW);
+				
+				mOutlinePaint.setColor(0xFF008AFF);
 			}
-			canvas.clipPath(path, Region.Op.DIFFERENCE);
-			canvas.drawRect(viewDrawingRect, hasFocus() ? mFocusPaint
-					: mNoFocusPaint);
-
+			try{
+				canvas.clipPath(path, Region.Op.DIFFERENCE);
+				canvas.drawRect(viewDrawingRect, hasFocus() ? mFocusPaint: mNoFocusPaint);
+			}catch (UnsupportedOperationException e) {
+				Log.e(HighlightView.class.getName(), e.getClass().getName());
+				Paint p =  new Paint();
+				p.setARGB(0, 255, 255, 255);
+				canvas.drawRect(viewDrawingRect,p);
+			}
 			canvas.restore();
+			
+			Paint innerRectPaint = new Paint(mOutlinePaint);
+			innerRectPaint.setStrokeWidth(2f);
+			DashPathEffect dashPath = new DashPathEffect(new float[]{5,5}, (float)1.0);
+            innerRectPaint.setPathEffect(dashPath);
+            innerRectPaint.setStyle(Style.STROKE);
+			canvas.drawPath(path, innerRectPaint);
+			path = new Path();
+			path.addRect(new RectF(mDrawRect), Path.Direction.CW);
 			canvas.drawPath(path, mOutlinePaint);
 
 			if (mMode == ModifyMode.Grow) {
@@ -358,7 +386,7 @@ class HighlightView {
 	}
 
 	public void setup(Matrix m, Rect imageRect, RectF cropRect, boolean circle,
-			boolean maintainAspectRatio) {
+			boolean maintainAspectRatio, float screenRatio) {
 		if (circle) {
 			maintainAspectRatio = true;
 		}
@@ -377,7 +405,7 @@ class HighlightView {
 		mOutlinePaint.setStrokeWidth(3F);
 		mOutlinePaint.setStyle(Paint.Style.STROKE);
 		mOutlinePaint.setAntiAlias(true);
-
+		this.screenRatio = screenRatio;
 		mMode = ModifyMode.None;
 		init();
 	}
@@ -404,4 +432,5 @@ class HighlightView {
 	private final Paint mFocusPaint = new Paint();
 	private final Paint mNoFocusPaint = new Paint();
 	private final Paint mOutlinePaint = new Paint();
+	float screenRatio;
 }

@@ -34,8 +34,8 @@
         android:layout_above="@+id/blin"
         android:layout_below="@+id/txtCrop"
         class="com.droid4you.util.cropimage.CropImageView"
-        android:background="#55000000" />
-
+         />
+<!-- android:background="#55000000"-->
     <LinearLayout
         android:id="@+id/blin"
         android:layout_width="fill_parent"

@@ -30,8 +30,9 @@ import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class WallpaperChooser extends Activity implements OnClickListener{
+public class WallpaperChooser extends Activity implements OnClickListener, OnItemSelectedListener{
 
 
 	private List<Integer> pics;
@@ -79,53 +80,14 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 
 
 
-		gallery.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				int flagId = pics.get(position);
-				
-				boolean portrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-
-				if(skyBackground && flagId == R.drawable.sys_btn_add){
-
-					txtInfo.setVisibility(View.VISIBLE);
-					txtInfo.setText("Clicca l'immagine per caricare una foto"); //FIXME esternalizzare
-
-					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context, portrait);
-					if(bitmap == null)
-						imageView.setImageResource(flagId);
-					else
-						imageView.setImageBitmap(bitmap);
-
-					imageView.setOnClickListener(listener);
-
-				}else{
-					txtInfo.setVisibility(View.GONE);
-
-					imageView.setOnClickListener(null);
-
-					if(!skyBackground){
-						selectedTexture = FlagManager.getFlagNameById(flagId);
-						if(!portrait)
-							flagId = FlagManager.toLandscape(flagId);
-					}
-					imageView.setImageResource(flagId);
-				}
-
-				imageView.setTag(flagId);
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {}
-		});
+		gallery.setOnItemSelectedListener(this);
 
 
 		imageView = (ImageView)findViewById(R.id.imgFlag);
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		if(selectedTexture == null)
+		if(selectedTexture == null) //FIXME Rivedere questa robaccia 
 			selectedTexture = prefs.getString(Settings.SINGLE_FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
 		String texture = selectedTexture;
 		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
@@ -144,22 +106,6 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 	}
 
 
-	@Override
-	public void onClick(View v) {
-		if(((Button) v).equals(btnOk)){
-			int flagId = (Integer) imageView.getTag();
-			String texture;
-			if(flagId == R.drawable.sys_btn_add){
-				prefs.edit().putString(Settings.SKY_MODE_BACKGROUND_IMAGE, "update").commit();
-				texture = Settings.SKY_USER_BACKGROUND;
-			}else
-				texture = FlagManager.getFlagNameById(flagId);
-			prefs.edit().putString(skyBackground?Settings.SKY_MODE_BACKGROUND_IMAGE : Settings.SINGLE_FLAG_IMAGE_SETTING, texture).commit();
-		}else
-			selectedTexture = null;
-		finish();
-	}
-
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -176,7 +122,7 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 					break;
 
 				case CROPPED_IMAGE:
-					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context, getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
+					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context);
 					Log.e("CROPPED", bitmap==null?"null":bitmap.getHeight()+"");
 					imageView.setImageBitmap(bitmap);
 					break;
@@ -187,6 +133,72 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 		}
 
 	}
+	
+	@Override
+	public void onClick(View v) {
+		if(((Button) v).equals(btnOk)){
+			int flagId = (Integer) imageView.getTag();
+			String texture;
+			if(flagId == R.drawable.sys_btn_add){
+				prefs.edit().putString(Settings.SKY_MODE_BACKGROUND_IMAGE, "update").commit();
+				texture = Settings.SKY_USER_BACKGROUND;
+			}else
+				texture = FlagManager.getFlagNameById(flagId);
+			
+			if(!skyBackground && !FlagWallpaperService.PRO && !(texture.startsWith(FlagManager.DEFAULT) || texture.startsWith(FlagManager.FREE))){
+				Toast.makeText(this, R.string.strOnlyInProVersion, Toast.LENGTH_LONG).show();
+				return;
+			}
+			prefs.edit().putString(skyBackground?Settings.SKY_MODE_BACKGROUND_IMAGE : Settings.SINGLE_FLAG_IMAGE_SETTING, texture).commit();
+		}else
+			selectedTexture = null;
+		finish();
+	}
+	
+	
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		int flagId = pics.get(position);
+		
+		boolean portrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+
+		if(skyBackground && flagId == R.drawable.sys_btn_add){
+
+			txtInfo.setVisibility(View.VISIBLE);
+			txtInfo.setText("Clicca l'immagine per caricare una foto"); //FIXME esternalizzare
+
+			Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context);
+			if(bitmap == null)
+				imageView.setImageResource(flagId);
+			else
+				imageView.setImageBitmap(bitmap);
+
+			imageView.setOnClickListener(listener);
+
+		}else{
+			
+
+			imageView.setOnClickListener(null);
+
+			if(!skyBackground){
+				selectedTexture = FlagManager.getFlagNameById(flagId);
+				if(!portrait)
+					flagId = FlagManager.toLandscape(flagId);
+			}
+			imageView.setImageResource(flagId);
+			if(!skyBackground && !FlagWallpaperService.PRO && !(selectedTexture.startsWith(FlagManager.DEFAULT) || selectedTexture.startsWith(FlagManager.FREE))){
+//				BitmapUtils.toGrayScale(imageView);
+				txtInfo.setVisibility(View.VISIBLE);
+				txtInfo.setText(R.string.strOnlyInProVersion);
+			}else
+				txtInfo.setVisibility(View.GONE);
+		}
+
+		imageView.setTag(flagId);
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> arg0) {}
 
 
 
@@ -227,7 +239,11 @@ public class WallpaperChooser extends Activity implements OnClickListener{
 				imageView = (ImageView) convertView;
 
 			if (thumbCache[position] == null){
-				thumbCache[position] = BitmapUtils.scaleCenterCrop(BitmapFactory.decodeResource(getResources(), pics.get(position)),thumbHeight,thumbHeight);
+				Bitmap bitmap  = BitmapUtils.scaleCenterCrop(BitmapFactory.decodeResource(getResources(), pics.get(position)),thumbHeight,thumbHeight);
+				String texture = FlagManager.getFlagNameById(pics.get(position));
+				if(!skyBackground && !FlagWallpaperService.PRO && !(texture.startsWith(FlagManager.DEFAULT) || texture.startsWith(FlagManager.FREE)))
+					bitmap = BitmapUtils.toGrayScale(bitmap);
+				thumbCache[position] = bitmap;
 			}
 			imageView.setImageBitmap(thumbCache[position]);
 			imageView.setAdjustViewBounds(true);

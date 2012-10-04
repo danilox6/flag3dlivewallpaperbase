@@ -58,6 +58,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		userBackPrefUpdated = false;
 		width = height = 512;
 
+		com.threed.jpct.Logger.setLogLevel(com.threed.jpct.Logger.WARNING);
 		//		if(prefs.getBoolean(Settings.DAY_TIME_SKY_BACKGROUND, true) && !DayTimeAlarmManager.isRunning())
 		//			DayTimeAlarmManager.start(context);
 	}
@@ -85,8 +86,6 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 				background = DayTimeAlarmManager.getAttualDayTimeString();
 			else
 				background = prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day");
-			if(background.equals(Settings.SKY_USER_BACKGROUND))
-				background += height>width?"_portrait":"_landscape";
 			FlagManager.loadTexture(background);
 			framebuffer.blit(TextureManager.getInstance().getTexture(background),
 					(BitmapUtils.getBestFittingScreenPow(width,height)-width)/2,
@@ -116,10 +115,9 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		}
 
 		boolean userBackground = prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day").equals(Settings.SKY_USER_BACKGROUND);
-		if((userBackPrefUpdated && userBackground) || (userBackground && !TextureManager.getInstance().containsTexture(Settings.SKY_USER_BACKGROUND+"_portrait"))){
+		if((userBackPrefUpdated && userBackground) || (userBackground && !TextureManager.getInstance().containsTexture(Settings.SKY_USER_BACKGROUND))){
 			try{
-				loadUserBanckgroundTexture(Settings.SKY_USER_BACKGROUND+"_portrait", BitmapUtils.getUserBitmap(FlagWallpaperService.context, true));
-				loadUserBanckgroundTexture(Settings.SKY_USER_BACKGROUND+"_landscape", BitmapUtils.getUserBitmap(FlagWallpaperService.context, false));
+				loadUserBanckgroundTexture(Settings.SKY_USER_BACKGROUND, BitmapUtils.getUserBitmap(FlagWallpaperService.context));
 			}catch (NullPointerException e) {
 				prefs.edit().putString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day");
 			}

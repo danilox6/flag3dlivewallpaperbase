@@ -19,11 +19,11 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.Display;
+import android.widget.ImageView;
 
 public class BitmapUtils {
 
-	private static Bitmap portraitUserBitmap = null;
-	private static Bitmap landscapeUserBitmap = null;
+	private static Bitmap userBitmap = null;
 	private static int bestFittingScreenPow = 0;
 
 	public static class BitmapDataObject implements Serializable {
@@ -46,18 +46,18 @@ public class BitmapUtils {
 		return BitmapFactory.decodeByteArray(bitmapDataObject.imageByteArray, 0, bitmapDataObject.imageByteArray.length);
 	}
 
-	private static Bitmap loadBitmap(Context context, boolean portrait) {
+	private static Bitmap loadBitmap(Context context) {
 		try {
-			ObjectInputStream ois = new ObjectInputStream(context.openFileInput(portrait?"portraitBitmapFile":"landscapeBitmapFile"));
+			ObjectInputStream ois = new ObjectInputStream(context.openFileInput("userBitmapFile"));
 			return readBitmapObject(ois);
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
-	private static void saveBitmap(Context context, Bitmap bitmap, boolean portrait) {
+	private static void saveBitmap(Context context, Bitmap bitmap) {
 		try {
-			FileOutputStream fos = context.openFileOutput(portrait?"portraitBitmapFile":"landscapeBitmapFile", Context.MODE_PRIVATE);
+			FileOutputStream fos = context.openFileOutput("userBitmapFile",Context.MODE_PRIVATE);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			writeBitmapObject(bitmap, oos);
 		} catch (FileNotFoundException e) {
@@ -67,32 +67,23 @@ public class BitmapUtils {
 		}
 	}
 
-	public static Bitmap getUserBitmap(Context context, boolean portrait){
-		return loadBitmap(context, portrait);
-//		if(portrait && portraitUserBitmap == null)
-//			portraitUserBitmap = loadBitmap(context, portrait);
-//		else if(!portrait && landscapeUserBitmap == null)
-//			landscapeUserBitmap = loadBitmap(context, portrait);
-//		return portrait?portraitUserBitmap:landscapeUserBitmap;
+	public static Bitmap getUserBitmap(Context context){
+		return loadBitmap(context);
+//		if(userBitmap == null)
+//			userBitmap = loadBitmap(context);
+//		return userBitmap;
 	}
 
-	public static void setUserBitmap(Context context, Bitmap bitmap, boolean portrait){
-//		if(portrait)
-//			portraitUserBitmap = bitmap;
-//		else
-//			landscapeUserBitmap = bitmap;
-		if(bitmap!=null)
-			saveBitmap(context, bitmap, portrait);
+	public static void setUserBitmap(Context context, Bitmap bitmap){
+//				userBitmap = bitmap;
+				if(bitmap!=null)
+					saveBitmap(context, bitmap);
 	}
 
 	public static void freeBitmaps(){
-		if(portraitUserBitmap!=null){
-			portraitUserBitmap.recycle();
-			portraitUserBitmap = null;
-		}
-		if(landscapeUserBitmap!=null){
-			landscapeUserBitmap.recycle();
-			landscapeUserBitmap = null;
+		if(userBitmap!=null){
+			userBitmap.recycle();
+			userBitmap = null;
 		}
 		System.gc();
 	}
@@ -235,20 +226,26 @@ public class BitmapUtils {
 		return result;
 	}
 
-	public static Bitmap toGrayscale(Bitmap bmpOriginal)
-    {        
-        int width, height;
-        height = bmpOriginal.getHeight();
-        width = bmpOriginal.getWidth();    
+	public static Bitmap toGrayScale(Bitmap bmpOriginal){        
+		int width, height;
+		height = bmpOriginal.getHeight();
+		width = bmpOriginal.getWidth();    
 
-        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-        Canvas c = new Canvas(bmpGrayscale);
-        Paint paint = new Paint();
-        ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0);
-        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
-        paint.setColorFilter(f);
-        c.drawBitmap(bmpOriginal, 0, 0, paint);
-        return bmpGrayscale;
-    }
+		Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+		Canvas c = new Canvas(bmpGrayscale);
+		Paint paint = new Paint();
+		ColorMatrix cm = new ColorMatrix();
+		cm.setSaturation(0);
+		ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+		paint.setColorFilter(f);
+		c.drawBitmap(bmpOriginal, 0, 0, paint);
+		return bmpGrayscale;
+	}
+	
+	public static void toGrayScale(ImageView v){
+	    ColorMatrix matrix = new ColorMatrix();
+	    matrix.setSaturation(0); //0 means grayscale
+	    ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+	    v.setColorFilter(cf);
+	}
 }

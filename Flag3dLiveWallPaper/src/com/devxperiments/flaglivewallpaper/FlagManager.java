@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -22,7 +21,8 @@ public class FlagManager {
 	private static String defaultFlag = null;
 
 	private static final String LANDSCAPE = "_landscape";
-	private static final String DEFAULT = "default_";
+	public static final String DEFAULT = "default_";
+	public static final String FREE = "free_";
 	private static final String SKY = "sky_";
 	private static final String SYSTEM_RES = "sys_";
 
@@ -44,7 +44,7 @@ public class FlagManager {
 		String backgroundToLoad = null;
 		if(prefs.getString(Settings.FLAG_MODE_SETTING, Settings.FLAG_MODE_FULLSCREEN).equals(Settings.FLAG_MODE_SKY)){
 			loadBackground = true;
-			if (prefs.getBoolean(Settings.DAY_TIME_SKY_BACKGROUND, true)){
+			if (prefs.getBoolean(Settings.DAY_TIME_SKY_BACKGROUND, false)){
 				backgroundToLoad = DayTimeAlarmManager.getAttualDayTimeString();
 			}else{
 				backgroundToLoad = prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day");
@@ -81,8 +81,7 @@ public class FlagManager {
 	}
 
 	private static void loadUserTexture() {
-		boolean portrait = FlagWallpaperService.context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-		Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context, portrait);
+		Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context);
 		loadTexture(Settings.SKY_USER_BACKGROUND, bitmap);
 	}
 
@@ -112,7 +111,7 @@ public class FlagManager {
 
 	private static void loadTexture(String textureName, Bitmap texture){
 		if(!TextureManager.getInstance().containsTexture(textureName)){
-			Log.e("TEXTURE", "Loaded texture: "+textureName);
+			Log.i("TEXTURE", "Loaded texture: "+textureName +" "+texture.getHeight()+"x"+texture.getWidth());
 			TextureManager.getInstance().addTexture(textureName, new Texture(texture));
 		}
 	}

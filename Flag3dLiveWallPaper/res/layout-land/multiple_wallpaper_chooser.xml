@@ -38,7 +38,7 @@
             android:layout_weight="0.5"
             android:contentDescription="@string/strImageContent"
             android:scaleType="centerCrop"
-            android:src="@drawable/default_resolution" />
+            />
     </LinearLayout>
 
     <LinearLayout

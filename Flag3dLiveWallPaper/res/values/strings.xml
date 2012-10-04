@@ -6,6 +6,7 @@
     <string name="strSelectFlagSng">Select a flag</string>
     <string name="strSelectFlagPlr">Select flags</string>
     <string name="strImageContent">Flag</string>
+    <string name="strOnlyInProVersion">Only available in Full version</string>
     
     
     <string name="strCredits" translate="false">Credits</string>

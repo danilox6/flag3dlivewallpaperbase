@@ -2,7 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.devxperiments.flaglivewallpaper" >
 
-    <PreferenceCategory android:title="Modalità Bandiera" >
+    <PreferenceCategory android:title="Impostazioni Bandiera" >
+        <Preference
+            android:key="single_flag"
+            android:title="@string/strSelectFlagSng" />
+
         <ListPreference
             android:defaultValue="flag_fullscreen"
             android:entries="@array/pref_flag_mode_entries"
@@ -31,7 +35,7 @@
             android:summary="Seleziona il livello di trasparenza"
             android:title="Trasparenza" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Immagine Bandiera" >
+    <!--PreferenceCategory android:title="Immagine Bandiera" >
         <ListPreference
             android:defaultValue="single_flag"
             android:entries="@array/pref_flag_image_entries"
@@ -40,18 +44,14 @@
             android:summary="Scegli tra singola o multi"
             android:title="Tipo Immagine" />
 
-        <Preference
-            android:key="single_flag"
-            android:title="@string/strSelectFlagSng" />
-
         <EditTextPreference
-            android:dialogMessage="Inserisci il tempo in minuti"
             android:defaultValue="10"
+            android:dialogMessage="Inserisci il tempo in minuti"
             android:dialogTitle="Tempo Aggiornamento"
             android:key="multi_flag_time"
             android:summary="Tempo tra un cambio e un altro"
             android:title="Tempo Aggiornamento" />
-    </PreferenceCategory>
+    </PreferenceCategory-->
     <PreferenceCategory android:title="Altro" >
         <Preference
             android:key="default"

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import com.devxperiments.flaglivewallpaper.FlagManager;
+import com.devxperiments.flaglivewallpaper.FlagWallpaperService;
 import com.devxperiments.flaglivewallpaper.R;
 
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 public class Settings extends PreferenceActivity implements OnPreferenceClickListener, OnSharedPreferenceChangeListener{
 	
@@ -37,7 +39,8 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 	public static final String CREDITS = "credits";
 	
 	private SharedPreferences prefs;
-	private Preference flagTimePref, skyBackgroundPreference, alphaPreference, flagImagePreference;
+//	private Preference flagTimePref;
+	private Preference skyBackgroundPreference, alphaPreference, flagImagePreference;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,7 +58,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 		alphaPreference = findPreference(ALPHA_SETTING);
 		skyBackgroundPreference = findPreference(SKY_MODE_BACKGROUND_IMAGE);
 		skyBackgroundPreference.setOnPreferenceClickListener(this);
-		flagTimePref = findPreference(MULTIPLE_FLAG_TIME_MIN);
+//		flagTimePref = findPreference(MULTIPLE_FLAG_TIME_MIN);
 		findPreference("default").setOnPreferenceClickListener(this);
 		
 		changeEnability();
@@ -70,8 +73,13 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 			Class clazz;
 			if (prefs.getString(FLAG_IMAGE_SETTING, SINGLE_FLAG_IMAGE_SETTING).equals(SINGLE_FLAG_IMAGE_SETTING))
 				clazz = WallpaperChooser.class;
-			else
+			else{
+				if(!FlagWallpaperService.PRO){
+					Toast.makeText(this, R.string.strOnlyInProVersion, Toast.LENGTH_LONG).show();
+					return true;
+				}
 				clazz  = MultipleWallpaperChooser.class;
+			}
 			Intent intent = new Intent(this, clazz);
 			startActivity(intent);
 			return true;
@@ -141,13 +149,13 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 			alphaPreference.setEnabled(true);
 			skyBackgroundPreference.setEnabled(true);
 		}
-		if(prefs.getString(FLAG_IMAGE_SETTING, SINGLE_FLAG_IMAGE_SETTING).equals(SINGLE_FLAG_IMAGE_SETTING)){
-			flagTimePref.setEnabled(false);
-			flagImagePreference.setTitle(R.string.strSelectFlagSng);
-		}else{
-			flagImagePreference.setTitle(R.string.strSelectFlagPlr);
-			flagTimePref.setEnabled(true);
-		}
+//		if(prefs.getString(FLAG_IMAGE_SETTING, SINGLE_FLAG_IMAGE_SETTING).equals(SINGLE_FLAG_IMAGE_SETTING)){
+//			flagTimePref.setEnabled(false);
+//			flagImagePreference.setTitle(R.string.strSelectFlagSng);
+//		}else{
+//			flagImagePreference.setTitle(R.string.strSelectFlagPlr);
+//			flagTimePref.setEnabled(true);
+//		}
 	}
 	
 }
