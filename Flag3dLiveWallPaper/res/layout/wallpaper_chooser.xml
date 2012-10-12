@@ -15,7 +15,8 @@
             android:id="@+id/gallery"
             android:layout_width="fill_parent"
             android:layout_height="0.0dp"
-            android:layout_weight="0.3" >
+            android:layout_weight="0.3" 
+            android:spacing="1dp">
         </Gallery>
 
         <ImageView
@@ -25,8 +26,11 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.7"
             android:contentDescription="@string/strImageContent"
-            android:padding="5dp"
-            android:scaleType="centerCrop" >
+            android:layout_marginTop="5dp"
+            android:cropToPadding="true"
+            android:background="@drawable/sys_holo_border"
+            android:scaleType="centerCrop"
+             >
         </ImageView>
 
         <TextView

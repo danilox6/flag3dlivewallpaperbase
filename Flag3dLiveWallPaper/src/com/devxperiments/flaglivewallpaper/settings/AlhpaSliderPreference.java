@@ -14,16 +14,15 @@ import android.view.View;
 
 public class AlhpaSliderPreference extends DialogPreference{
 
-	private float DEFAULT_ALPHA = 2f;
+	private float DEFAULT_ALPHA = 4f;
 	private SliderView slider;
 	private float value = DEFAULT_ALPHA;
 
 	public AlhpaSliderPreference(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
+		super(context, attrs);
 	}
 
-	public AlhpaSliderPreference(Context context, AttributeSet attrs,
-			int defStyle) {
+	public AlhpaSliderPreference(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 

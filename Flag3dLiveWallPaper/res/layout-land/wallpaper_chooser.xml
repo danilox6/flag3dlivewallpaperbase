@@ -8,7 +8,8 @@
         android:id="@+id/gallery"
         android:layout_width="fill_parent"
         android:layout_height="0.0dp"
-        android:layout_weight="0.3" >
+        android:layout_weight="0.3"
+        android:spacing="1dp" >
     </Gallery>
 
     <LinearLayout
@@ -33,7 +34,10 @@
                 android:layout_height="fill_parent"
                 android:layout_above="@+id/txtImageInfo"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/sys_holo_border"
                 android:contentDescription="@string/strImageContent"
+                android:cropToPadding="true"
                 android:scaleType="centerCrop" >
             </ImageView>
 

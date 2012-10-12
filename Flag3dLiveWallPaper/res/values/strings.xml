@@ -3,13 +3,42 @@
 
     <string name="app_name" translate="false">Flag Live Wallpaper</string>
     <string name="description">The Live Wallpaper of your favorite team!</string>
-    <string name="strSelectFlagSng">Select a flag</string>
-    <string name="strSelectFlagPlr">Select flags</string>
+    <string name="crop_label">Crop picture</string>
+    <string name="settings_label">Settings</string>
     <string name="strImageContent">Flag</string>
     <string name="strOnlyInProVersion">Only available in Full version</string>
-    
-    
-    <string name="strCredits" translate="false">Credits</string>
+    <string name="strBtnFeedback">Send Feedback</string>
+    <string name="strPickFromGallery">Tap to select a picture from gallery</string>
     <string name="strDragDrop" translate="false">Drag&amp;Drop</string>
-
+    
+    
+    <string name="txtCredits" translate="false">Author: Danilo Iannelli\nFlag Graphic: Marco Magnetti\n
+ 	    \n
+ 	Used Libraries:\n
+ 	- jPCT\n
+ 	  \u00A0http://www.jpct.net\n
+ 	- jBrush\n
+ 	\u00A0http://jbrusheditor.tumblr.com\n
+ 	- GLWallpaperService\n
+ 	\u00A0https://github.com/markfguerra/GLWallpaperService</string>
+    <string name="txtFeedback">Send us error reports, suggestions, feature requests or flag design ideas!</string>
+    <string name="txtRestoreDefault">Are you sure you want to restore default settings?</string>
+  
+    
+    <string name="prefFlagSettingCategory">Flag Settings</string>
+    <string name="prefSelectFlagSng">Select a flag</string>
+    <string name="prefSelectFlagPlr">Select flags</string>
+    <string name="prefSelectFlagSummary">Select the image to be displayed on the flag</string>
+    <string name="prefFlagMode">Flag mode</string>
+    <string name="prefFlagModeSummary">Choose between Fullscreen Mode and Sky Mode</string>
+    <string name="prefBackground">Select a background</string>
+    <string name="prefBackgroundSummary">Select the background to be shown behind the flag</string>
+    <string name="prefTransparency">Transparency</string>
+    <string name="prefTransparencySummary">Set the transparency level of the flag</string>
+	<string name="prefOtherCategory">Other</string>
+	<string name="prefGoFull">Obtain full version</string>
+    <string name="prefDefault">Restore default settings</string>
+    <string name="prefCredits" translate="false">Credits</string>
+    <string name="prefFeedback">Feedback &amp; suggestions</string>
+    <string name="prefOnlySky">Only available in Sky Mode </string>
 </resources>

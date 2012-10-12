@@ -2,8 +2,11 @@ package com.devxperiments.flaglivewallpaper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,9 +20,8 @@ import com.threed.jpct.TextureManager;
 import com.threed.jpct.util.BitmapHelper;
 
 public class FlagManager {
-	private static HashMap<String, Integer> flagIds = null;
 	private static String defaultFlag = null;
-
+	private static String defaultPackage;
 	private static final String LANDSCAPE = "_landscape";
 	public static final String DEFAULT = "default_";
 	public static final String FREE = "free_";
@@ -28,7 +30,8 @@ public class FlagManager {
 
 	@SuppressWarnings("rawtypes")
 	public static void inizialize(String defPackage){
-		flagIds = new HashMap<String, Integer>();
+		defaultPackage = defPackage;
+		FlagIdsMap.init();
 		Class resources = R.drawable.class;
 		Field[] fields = resources.getFields();
 		defaultFlag = fields[0].getName();
@@ -64,9 +67,9 @@ public class FlagManager {
 				int id = FlagWallpaperService.context.getResources().getIdentifier(name, "drawable", defPackage);
 
 
-				Log.e("RESOURCE","Res: "+ name + " "+id);
+				Log.i("FlagManager","Resource loaded: "+ name + " "+id);
 				//				if(!name.startsWith(SKY))
-				flagIds.put(name, id);
+				FlagIdsMap.put(name, id);
 
 				if((loadBackground && name.startsWith(backgroundToLoad)) || (loadDefault && name.startsWith(DEFAULT)) || (flagToLoad!= null && name.startsWith(flagToLoad)))
 					loadTexture(name, id);
@@ -93,7 +96,7 @@ public class FlagManager {
 				Bitmap texture = BitmapHelper.convert(FlagWallpaperService.context.getResources().getDrawable(id));
 				loadTexture(textureName, texture);
 			}catch (OutOfMemoryError e) {
-				Log.e("EXCEPTION", "OutOfMemory!!!");
+				Log.e("FlagManger", "OutOfMemoryError!!!");
 				exc = e;
 			}
 		}while(exc!=null || ++count<5);
@@ -101,24 +104,25 @@ public class FlagManager {
 	}
 
 	public static void loadTexture(String textureName){
+		
 		if(!TextureManager.getInstance().containsTexture(textureName)){
 			if(textureName.startsWith(Settings.SKY_USER_BACKGROUND))
 				loadUserTexture();
 			else
-				loadTexture(textureName, flagIds.get(textureName));
+				loadTexture(textureName, FlagIdsMap.get(textureName));
 		}
 	}
 
 	private static void loadTexture(String textureName, Bitmap texture){
 		if(!TextureManager.getInstance().containsTexture(textureName)){
-			Log.i("TEXTURE", "Loaded texture: "+textureName +" "+texture.getHeight()+"x"+texture.getWidth());
+			Log.i("FlagManager", "Loaded texture: "+textureName +" "+texture.getHeight()+"x"+texture.getWidth());
 			TextureManager.getInstance().addTexture(textureName, new Texture(texture));
 		}
 	}
 
 
 	public static int getFlagId(String flagName){
-		return flagIds.get(flagName);
+		return FlagIdsMap.get(flagName);
 	}
 
 	public static String toPortrait(String flagName){
@@ -129,50 +133,101 @@ public class FlagManager {
 
 	public static int toPortrait(int flagId){
 		String flag = getFlagNameById(flagId);
-		return flagIds.get(toPortrait(flag));
+		return FlagIdsMap.get(toPortrait(flag));
 	}
 
 	public static String toLandscape(String flagName){
 		if(!flagName.endsWith(LANDSCAPE))
-			if (flagIds.containsKey(flagName + LANDSCAPE))
+			if (FlagIdsMap.containsKey(flagName + LANDSCAPE))
 				return flagName + LANDSCAPE;
 		return flagName;
 	}
 
 	public static int toLandscape(int flagId){
 		String flag = getFlagNameById(flagId);
-		return flagIds.get(toLandscape(flag));
+		return FlagIdsMap.get(toLandscape(flag));
 	}
 
 	public static String getDefaultFlag(){
-		//		if(defaultFlag == null)
-		//			inizialize();
+		if(defaultFlag == null)
+			inizialize(defaultPackage);
 		return defaultFlag;
 	}
 
 	public static List<Integer> getPortraitFlagIds(){
 		List<Integer> portraitIds = new ArrayList<Integer>();
-		portraitIds.add(flagIds.get(defaultFlag));
-		for(String flagName: flagIds.keySet())
+		portraitIds.add(FlagIdsMap.get(defaultFlag));
+		List<String> flags = FlagIdsMap.keyList();
+		Collections.sort(flags, new Comparator<String>() {
+
+			@Override
+			public int compare(String lhs, String rhs) {
+				if((lhs.startsWith(FREE)&&rhs.startsWith(FREE))||(!lhs.startsWith(FREE)&&!rhs.startsWith(FREE)))
+					return 0;
+				if(lhs.startsWith(FREE))
+					return -1;
+				return 1;
+			}
+		});
+		for(String flagName: flags)
 			if(!flagName.endsWith(LANDSCAPE) && !flagName.startsWith(SKY) &&!flagName.startsWith(DEFAULT))
-				portraitIds.add(flagIds.get(flagName));
+				portraitIds.add(FlagIdsMap.get(flagName));
+		
 		return portraitIds;
 	}
 
 	public static List<Integer> getSkyBackgroundIds(){
 		List<Integer> skyIds = new ArrayList<Integer>();
-		for(String flagName: flagIds.keySet())
+		for(String flagName: FlagIdsMap.keySet())
 			if(flagName.startsWith(SKY))
-				skyIds.add(flagIds.get(flagName));
+				skyIds.add(FlagIdsMap.get(flagName));
 		skyIds.add(R.drawable.sys_btn_add);
 		return skyIds;
 	}
 
 	public static String getFlagNameById(int id){
-		for(String key: flagIds.keySet())
-			if (flagIds.get(key) == id)
+		for(String key: FlagIdsMap.keySet())
+			if (FlagIdsMap.get(key) == id)
 				return key;
 		return null;
 	}
 
+	private static class FlagIdsMap{
+		private static HashMap<String, Integer> flagIds = null;
+		
+		public static void init(){
+			flagIds = new HashMap<String, Integer>();
+		}
+		
+		public static int get(String key){
+			if(flagIds==null)
+				inizialize(defaultPackage);
+			return flagIds.get(key);
+		}
+		
+		public static void put(String key, Integer value){
+			if(flagIds==null)
+				inizialize(defaultPackage);
+			flagIds.put(key, value);
+		}
+		
+		public static Set<String> keySet(){
+			if(flagIds==null)
+				inizialize(defaultPackage);
+			return flagIds.keySet();
+		}
+		
+		public static boolean containsKey(String string) {
+			if(flagIds==null)
+				inizialize(defaultPackage);
+			return flagIds.containsKey(string);
+		}
+		
+		public static List<String> keyList(){
+			List<String> keys = new ArrayList<String>();
+			for(String key: keySet())
+				keys.add(key);
+			return keys;
+		}
+	}
 }

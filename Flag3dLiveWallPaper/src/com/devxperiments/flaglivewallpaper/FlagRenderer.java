@@ -70,7 +70,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 	public void onDrawFrame(GL10 gl) {
 
 		if(texture!=null){
-			Log.e("TEXTURE", "Texture to show: "+texture);
+			Log.i("FlagRenderer", "Texture to show: "+texture);
 			FlagManager.loadTexture(texture);
 			String oldTexture = flag.getUserObject()==null? null:((String)flag.getUserObject())+"";
 			flag.setTexture(texture);
@@ -260,7 +260,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences prefs,	String key) {
-		Log.e("PREF", "Pref Changed: "+ key); 
+		Log.i("FlagRenderer", "Preferece Changed: "+ key); 
 		if(key.equals(Settings.SKY_MODE_BACKGROUND_IMAGE) && prefs.getString(key, "sky_day").equals(Settings.SKY_USER_BACKGROUND))
 			userBackPrefUpdated = true;			
 		else if(key.equals(Settings.FLAG_MODE_SETTING))

@@ -39,9 +39,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.TextView;
 
 
 
@@ -74,7 +72,6 @@ public class CropImage extends Activity {
 		super.onCreate(icicle);
 		mContentResolver = getContentResolver();
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.cropimage);
 
 		mImageView = (CropImageView) findViewById(R.id.image);
@@ -139,9 +136,6 @@ public class CropImage extends Activity {
 					}
 				});
 		
-		((TextView) findViewById(R.id.txtCrop)).setText(orientation?"Croppa Portrait":"Croppa Landscape"); //FIXME Extern
-
-
 		startFaceDetection();
 	}
 	//
@@ -323,7 +317,6 @@ public class CropImage extends Activity {
 					cropWidth = cropHeight; // * mAspectX / mAspectY;
 				}
 			}
-			Log.e("RATIO", "Ratio "+mAspectY+"x"+mAspectX+" "+ ratio);
 			int x = (width - cropWidth) / 2;
 			int y = (height - cropHeight) / 2;
 

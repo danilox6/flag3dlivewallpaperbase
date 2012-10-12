@@ -34,7 +34,6 @@ import android.widget.Toast;
 
 public class WallpaperChooser extends Activity implements OnClickListener, OnItemSelectedListener{
 
-
 	private List<Integer> pics;
 	private ImageView imageView;
 	private Button btnOk;
@@ -42,7 +41,6 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 	private SharedPreferences prefs;
 	private int thumbHeight;
 	private Bitmap[] thumbCache;
-	private static String selectedTexture;
 	private boolean skyBackground;
 	private OnClickListener listener = null;
 	private final int PICKED_IMAGE = 1;
@@ -58,6 +56,7 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 		skyBackground = getIntent().getBooleanExtra(Settings.SKY_MODE_BACKGROUND_IMAGE, false);
 
 		if(skyBackground){
+			setTitle(R.string.prefBackground);
 			pics = FlagManager.getSkyBackgroundIds();
 			listener = new OnClickListener() {
 
@@ -78,21 +77,15 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 		gallery.setAdapter(new FlagAdapter(this));
 		gallery.setCallbackDuringFling(false);
 
-
-
 		gallery.setOnItemSelectedListener(this);
-
 
 		imageView = (ImageView)findViewById(R.id.imgFlag);
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		if(selectedTexture == null) //FIXME Rivedere questa robaccia 
-			selectedTexture = prefs.getString(Settings.SINGLE_FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
-		String texture = selectedTexture;
+		String texture = prefs.getString(Settings.SINGLE_FLAG_IMAGE_SETTING, FlagManager.getDefaultFlag());
 		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
 			texture = FlagManager.toLandscape(texture);
-		Log.e("TEXTURE PAGLIACCIA", texture);
 		imageView.setImageResource(FlagManager.getFlagId(texture));
 		imageView.setTag(FlagManager.getFlagId(texture));
 
@@ -101,11 +94,9 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 		((Button) findViewById(R.id.btnCancel)).setOnClickListener(this);
 
 		Display display = getWindowManager().getDefaultDisplay();
-		thumbHeight = (display.getHeight()*30/100) - 5;
+		thumbHeight = (display.getHeight()*30/100) - 20;
 
 	}
-
-
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -123,7 +114,7 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 
 				case CROPPED_IMAGE:
 					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context);
-					Log.e("CROPPED", bitmap==null?"null":bitmap.getHeight()+"");
+					Log.i(WallpaperChooser.class.getSimpleName(), bitmap==null?"null":bitmap.getHeight()+"");
 					imageView.setImageBitmap(bitmap);
 					break;
 				}
@@ -150,11 +141,9 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 				return;
 			}
 			prefs.edit().putString(skyBackground?Settings.SKY_MODE_BACKGROUND_IMAGE : Settings.SINGLE_FLAG_IMAGE_SETTING, texture).commit();
-		}else
-			selectedTexture = null;
+		}
 		finish();
 	}
-	
 	
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -165,7 +154,7 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 		if(skyBackground && flagId == R.drawable.sys_btn_add){
 
 			txtInfo.setVisibility(View.VISIBLE);
-			txtInfo.setText("Clicca l'immagine per caricare una foto"); //FIXME esternalizzare
+			txtInfo.setText(R.string.strPickFromGallery);
 
 			Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context);
 			if(bitmap == null)
@@ -179,7 +168,7 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 			
 
 			imageView.setOnClickListener(null);
-
+			String selectedTexture = null;
 			if(!skyBackground){
 				selectedTexture = FlagManager.getFlagNameById(flagId);
 				if(!portrait)
@@ -247,7 +236,9 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 			}
 			imageView.setImageBitmap(thumbCache[position]);
 			imageView.setAdjustViewBounds(true);
-			imageView.setBackgroundResource(imageBackground);
+//			imageView.setLayoutParams(new Gallery.LayoutParams(thumbHeight, thumbHeight));
+//			imageView.setBackgroundResource(imageBackground);
+			imageView.setBackgroundResource(R.drawable.sys_holo_border);
 			return imageView;
 		}
 

@@ -2,18 +2,19 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.devxperiments.flaglivewallpaper" >
 
-    <PreferenceCategory android:title="Impostazioni Bandiera" >
+    <PreferenceCategory android:title="@string/prefFlagSettingCategory" >
         <Preference
             android:key="single_flag"
-            android:title="@string/strSelectFlagSng" />
+            android:title="@string/prefSelectFlagSng"
+            android:summary="@string/prefSelectFlagSummary" />
 
         <ListPreference
             android:defaultValue="flag_fullscreen"
             android:entries="@array/pref_flag_mode_entries"
             android:entryValues="@array/pref_flag_mode_values"
             android:key="flag_mode_setting"
-            android:summary="Scegli tra fullscreen o sky"
-            android:title="Modalità Bandiera" />
+            android:summary="@string/prefFlagModeSummary"
+            android:title="@string/prefFlagMode" />
 
         <!--
              CheckBoxPreference
@@ -26,14 +27,14 @@
 
         <Preference
             android:key="sky_image"
-            android:summary="Seleziona lo sfondo dietro la bandiera"
-            android:title="Seleziona immagine sfondo" />
+            android:summary="@string/prefBackgroundSummary"
+            android:title="@string/prefBackground" />
 
         <com.devxperiments.flaglivewallpaper.settings.AlhpaSliderPreference
             android:key="alpha"
             android:persistent="true"
-            android:summary="Seleziona il livello di trasparenza"
-            android:title="Trasparenza" />
+            android:summary="@string/prefTransparencySummary"
+            android:title="@string/prefTransparency" />
     </PreferenceCategory>
     <!--PreferenceCategory android:title="Immagine Bandiera" >
         <ListPreference
@@ -52,16 +53,16 @@
             android:summary="Tempo tra un cambio e un altro"
             android:title="Tempo Aggiornamento" />
     </PreferenceCategory-->
-    <PreferenceCategory android:title="Altro" >
+    <PreferenceCategory android:title="@string/prefOtherCategory" >
         <Preference
             android:key="default"
-            android:title="Restore Default" />
+            android:title="@string/prefDefault" />
         <Preference
             android:key="feedback"
-            android:title="Feedback" />
+            android:title="@string/prefFeedback" />
         <Preference
             android:key="credits"
-            android:title="@string/strCredits" />
+            android:title="@string/prefCredits" />
     </PreferenceCategory>
 
 </PreferenceScreen>

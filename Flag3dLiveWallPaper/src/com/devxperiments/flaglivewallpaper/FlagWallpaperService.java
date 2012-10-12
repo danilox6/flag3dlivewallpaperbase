@@ -1,6 +1,7 @@
 package com.devxperiments.flaglivewallpaper;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import net.rbgrn.android.glwallpaperservice.*;
 
@@ -47,6 +48,7 @@ public class FlagWallpaperService extends GLWallpaperService {
 		
 		public void onDestroy() {
 			super.onDestroy();
+			Log.i("OnDestroy", "destroyed");
 			if (renderer != null) {
 				renderer.release();
 			}

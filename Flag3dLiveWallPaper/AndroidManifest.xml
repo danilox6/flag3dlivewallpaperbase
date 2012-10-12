@@ -30,28 +30,19 @@
         </activity>
         <activity
             android:name="com.devxperiments.flaglivewallpaper.settings.WallpaperChooser"
-            android:label="@string/strSelectFlagSng"
-            android:theme="@android:style/Theme.Light" >
+            android:label="@string/prefSelectFlagSng"
+            android:configChanges="orientation|keyboardHidden"
+          >
         </activity>
         <activity
             android:name="com.devxperiments.flaglivewallpaper.settings.MultipleWallpaperChooser"
-            android:label="@string/strSelectFlagPlr"
-            android:theme="@android:style/Theme.Light" >
-        </activity>
-        <activity
-            android:name="com.devxperiments.flaglivewallpaper.settings.CreditsActivity"
-            android:label="@string/strCredits"
-            android:theme="@android:style/Theme.Light" >
-        </activity>
-        <activity
-            android:name="com.devxperiments.flaglivewallpaper.settings.FeedbackActivity"
-            android:label="Feedback"
-            android:theme="@android:style/Theme.Light" >
+            android:label="@string/prefSelectFlagPlr"
+            >
         </activity>
         <activity android:hardwareAccelerated="false"
             android:name="com.droid4you.util.cropimage.CropImage"
             android:configChanges="orientation|keyboardHidden"
-            android:label="CropLabel"
+            android:label="@string/crop_label"
             android:theme="@android:style/Theme.Light" >
         </activity>
 
