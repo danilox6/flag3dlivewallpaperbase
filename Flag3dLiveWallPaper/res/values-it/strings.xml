@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name" translate="false">Flag Live Wallpaper</string>
+    <string name="description">Il Live Wallpaper della tua squadra del cuore!</string>
+    <string name="crop_label">Ritaglia foto</string>
+    <string name="settings_label">Impostazioni</string>
+    <string name="strImageContent">Bandiera</string>
+    <string name="strOnlyInProVersion">Disponibile solamente nella verione Full</string>
+    <string name="strBtnFeedback">Invia Feedback</string>
+    <string name="strPickFromGallery">Tocca per selezionare una immagine dalla galleria</string>
+    <string name="strDragDrop" translate="false">Drag&amp;Drop</string>
+    
+    
+    <string name="txtCredits" translate="false">Author: Danilo Iannelli\nFlag Graphic: Marco Magnetti\n
+ 	    \n
+ 	Used Libraries:\n
+ 	- jPCT\n
+ 	  \u00A0http://www.jpct.net\n
+ 	- jBrush\n
+ 	\u00A0http://jbrusheditor.tumblr.com\n
+ 	- GLWallpaperService\n
+ 	\u00A0https://github.com/markfguerra/GLWallpaperService</string>
+    <string name="txtFeedback">Send us error reports, suggestions, feature requests or flag design ideas!</string>
+    <string name="txtRestoreDefault">Are you sure you want to restore default settings?</string>
+  
+    
+    <string name="prefFlagSettingCategory">Impostazioni bandiera</string>
+    <string name="prefSelectFlagSng">Seleziona una bandiera</string>
+    <string name="prefSelectFlagPlr">Seleziona bandiere</string>
+    <string name="prefSelectFlagSummary">Seleziona l\'immagine da visualizzare sulla bandiera</string>
+    <string name="prefFlagMode">Modalità bandiera</string>
+    <string name="prefFlagModeSummary">Scegli tra modalità Fullscreen e modalità Sky</string>
+    <string name="prefBackground">Seleziona uno sfondo</string>
+    <string name="prefBackgroundSummary">Seleziona l\'immagine di sfondo da visualizzare dietro la bandiera</string>
+    <string name="prefTransparency">Trasparenza</string>
+    <string name="prefTransparencySummary">Imposta il livello di trasparenza della bandiera</string>
+	<string name="prefOtherCategory">Altro</string>
+	<string name="prefGoFull">Ottieni la versione Full</string>
+    <string name="prefDefault">Ripristina impostazioni di default</string>
+    <string name="prefCredits">Crediti</string>
+    <string name="prefFeedback">Feedback &amp; suggerimenti</string>
+    <string name="prefOnlySky">Disponibile solamente in modalità sky</string>
+</resources>

@@ -1,5 +1,7 @@
 package com.devxperiments.flaglivewallpaper;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,8 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import android.app.WallpaperManager;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -32,6 +38,7 @@ public class FlagManager {
 	public static void inizialize(String defPackage){
 		defaultPackage = defPackage;
 		FlagIdsMap.init();
+//		Texture.defaultTo4bpp(true);
 		Class resources = R.drawable.class;
 		Field[] fields = resources.getFields();
 		defaultFlag = fields[0].getName();
@@ -47,13 +54,13 @@ public class FlagManager {
 		String backgroundToLoad = null;
 		if(prefs.getString(Settings.FLAG_MODE_SETTING, Settings.FLAG_MODE_FULLSCREEN).equals(Settings.FLAG_MODE_SKY)){
 			loadBackground = true;
-			if (prefs.getBoolean(Settings.DAY_TIME_SKY_BACKGROUND, false)){
-				backgroundToLoad = DayTimeAlarmManager.getAttualDayTimeString();
-			}else{
+//			if (prefs.getBoolean(Settings.DAY_TIME_SKY_BACKGROUND, false)){
+//				backgroundToLoad = DayTimeAlarmManager.getAttualDayTimeString();
+//			}else{
 				backgroundToLoad = prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day");
 				if (backgroundToLoad.equals(Settings.SKY_USER_BACKGROUND))
 					loadBackground = false;
-			}
+//			}
 		}
 
 		for (Field field: fields ) {
@@ -67,7 +74,7 @@ public class FlagManager {
 				int id = FlagWallpaperService.context.getResources().getIdentifier(name, "drawable", defPackage);
 
 
-				Log.i("FlagManager","Resource loaded: "+ name + " "+id);
+				Log.i("FlagManager","Resource loaded: "+ name + " id: "+id);
 				//				if(!name.startsWith(SKY))
 				FlagIdsMap.put(name, id);
 
@@ -80,7 +87,7 @@ public class FlagManager {
 			loadUserTexture();
 		}
 
-		TextureManager.getInstance().compress();
+//		TextureManager.getInstance().compress();
 	}
 
 	private static void loadUserTexture() {
@@ -94,12 +101,22 @@ public class FlagManager {
 		do{
 			try{
 				Bitmap texture = BitmapHelper.convert(FlagWallpaperService.context.getResources().getDrawable(id));
+//				if(textureName.startsWith(SKY)){
+//					WallpaperManager wallpaperManager = WallpaperManager.getInstance(FlagWallpaperService.context);
+//					int target = BitmapUtils.getBestFittingScreenPow(wallpaperManager.getDesiredMinimumWidth(), wallpaperManager.getDesiredMinimumHeight());
+//					texture = BitmapUtils.transform(new Matrix(), texture, target, target, true);
+////					texture = getBitmap(id, target);
+//					Log.i("CROP", "Cropped: "+textureName +" "+texture.getWidth()+"x"+texture.getHeight() +", " +texture.getRowBytes() * texture.getHeight()+"bytes");
+//				}else;
+//					texture = BitmapHelper.convert(FlagWallpaperService.context.getResources().getDrawable(id));
 				loadTexture(textureName, texture);
+				
 			}catch (OutOfMemoryError e) {
-				Log.e("FlagManger", "OutOfMemoryError!!!");
+				Log.e("FlagManger", "OutOfMemoryError while loadind "+textureName);
 				exc = e;
+				System.gc();
 			}
-		}while(exc!=null || ++count<5);
+		}while(exc!=null && ++count<5);
 
 	}
 
@@ -110,13 +127,18 @@ public class FlagManager {
 				loadUserTexture();
 			else
 				loadTexture(textureName, FlagIdsMap.get(textureName));
-		}
+		}else
+			Log.i("FlagManager", textureName + " already loaded");
 	}
 
-	private static void loadTexture(String textureName, Bitmap texture){
+	private static void loadTexture(String textureName, Bitmap bitmap){
 		if(!TextureManager.getInstance().containsTexture(textureName)){
-			Log.i("FlagManager", "Loaded texture: "+textureName +" "+texture.getHeight()+"x"+texture.getWidth());
-			TextureManager.getInstance().addTexture(textureName, new Texture(texture));
+			Log.i("FlagManager", "Loading texture: "+textureName +" "+bitmap.getHeight()+"x"+bitmap.getWidth()+ ", "+bitmap.getRowBytes()*bitmap.getHeight()+"bytes");
+			Texture texture = new Texture(bitmap,true);
+			if(!textureName.equals(Settings.SKY_USER_BACKGROUND))
+				texture.compress();
+			TextureManager.getInstance().addTexture(textureName, texture);
+			bitmap.recycle();
 		}
 	}
 
@@ -153,7 +175,26 @@ public class FlagManager {
 			inizialize(defaultPackage);
 		return defaultFlag;
 	}
-
+	
+	
+//	private static Bitmap getBitmap(int id, int maxSize) {
+//			//Decode image size
+//			BitmapFactory.Options o = new BitmapFactory.Options();
+//			o.inJustDecodeBounds = true;
+//
+//			BitmapFactory.decodeResource(FlagWallpaperService.context.getResources(), id, o);
+//
+//			int scale = 1;
+//			if (o.outHeight > maxSize || o.outWidth > maxSize) 
+//				scale = (int)Math.pow(2, (int) Math.round(Math.log(maxSize / (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
+//
+//			BitmapFactory.Options o2 = new BitmapFactory.Options();
+//			o2.inSampleSize = scale;
+//			Bitmap b = BitmapFactory.decodeResource(FlagWallpaperService.context.getResources(), id, o2);
+//
+//			return b;
+//	}
+	
 	public static List<Integer> getPortraitFlagIds(){
 		List<Integer> portraitIds = new ArrayList<Integer>();
 		portraitIds.add(FlagIdsMap.get(defaultFlag));
@@ -228,6 +269,11 @@ public class FlagManager {
 			for(String key: keySet())
 				keys.add(key);
 			return keys;
+		}
+		
+		public static void clear(){
+			flagIds.clear();
+			flagIds = null;
 		}
 	}
 }

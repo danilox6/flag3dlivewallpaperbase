@@ -52,7 +52,7 @@ public class FlagWallpaperService extends GLWallpaperService {
 			if (renderer != null) {
 				renderer.release();
 			}
-			DayTimeAlarmManager.stop();
+//			DayTimeAlarmManager.stop();
 			renderer = null;
 		}
 		

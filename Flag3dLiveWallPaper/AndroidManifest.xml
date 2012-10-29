@@ -8,7 +8,8 @@
         android:minSdkVersion="7"
         android:targetSdkVersion="8" />
 
-    <application  android:hardwareAccelerated="false"
+    <application
+        android:hardwareAccelerated="false"
         android:icon="@drawable/sys_ic_launcher"
         android:label="@string/app_name" >
         <service
@@ -30,20 +31,14 @@
         </activity>
         <activity
             android:name="com.devxperiments.flaglivewallpaper.settings.WallpaperChooser"
-            android:label="@string/prefSelectFlagSng"
             android:configChanges="orientation|keyboardHidden"
-          >
+            android:label="@string/prefSelectFlagSng" >
         </activity>
         <activity
-            android:name="com.devxperiments.flaglivewallpaper.settings.MultipleWallpaperChooser"
-            android:label="@string/prefSelectFlagPlr"
-            >
-        </activity>
-        <activity android:hardwareAccelerated="false"
             android:name="com.droid4you.util.cropimage.CropImage"
             android:configChanges="orientation|keyboardHidden"
-            android:label="@string/crop_label"
-            android:theme="@android:style/Theme.Light" >
+            android:hardwareAccelerated="false"
+            android:label="@string/crop_label" >
         </activity>
 
         <receiver android:name="com.devxperiments.flaglivewallpaper.DayTimeAlarmManager" >

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import com.devxperiments.flaglivewallpaper.FlagManager;
-import com.devxperiments.flaglivewallpaper.FlagWallpaperService;
 import com.devxperiments.flaglivewallpaper.R;
 
 import android.app.AlertDialog;
@@ -27,7 +26,6 @@ import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class Settings extends PreferenceActivity implements OnPreferenceClickListener, OnSharedPreferenceChangeListener{
 
@@ -82,18 +80,19 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 		String key = preference.getKey();
 		if (key.equals(SINGLE_FLAG_IMAGE_SETTING)) {
 
-			@SuppressWarnings("rawtypes")
-			Class clazz;
-			if (prefs.getString(FLAG_IMAGE_SETTING, SINGLE_FLAG_IMAGE_SETTING).equals(SINGLE_FLAG_IMAGE_SETTING))
-				clazz = WallpaperChooser.class;
-			else{
-				if(!FlagWallpaperService.PRO){
-					Toast.makeText(this, R.string.strOnlyInProVersion, Toast.LENGTH_LONG).show();
-					return true;
-				}
-				clazz  = MultipleWallpaperChooser.class;
-			}
-			Intent intent = new Intent(this, clazz);
+//			@SuppressWarnings("rawtypes")
+//			Class clazz;
+//			if (prefs.getString(FLAG_IMAGE_SETTING, SINGLE_FLAG_IMAGE_SETTING).equals(SINGLE_FLAG_IMAGE_SETTING))
+//				clazz = WallpaperChooser.class;
+//			else{
+//				if(!FlagWallpaperService.PRO){
+//					Toast.makeText(this, R.string.strOnlyInProVersion, Toast.LENGTH_LONG).show();
+//					return true;
+//				}
+//				clazz  = MultipleWallpaperChooser.class;
+//			}
+//			Intent intent = new Intent(this, clazz);
+			Intent intent = new Intent(this, WallpaperChooser.class);
 			startActivity(intent);
 			return true;
 		}else if(key.equals(FEEDBACK)){

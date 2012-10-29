@@ -25,6 +25,7 @@ import com.devxperiments.flaglivewallpaper.R;
 import com.devxperiments.flaglivewallpaper.settings.BitmapUtils;
 
 import android.app.Activity;
+import android.app.WallpaperManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -107,6 +108,7 @@ public class CropImage extends Activity {
 			}
 
 			mOutputX = mOutputY = BitmapUtils.getBestFittingScreenPow(display);
+			
 		}
 
 		if(orientation)
@@ -259,15 +261,17 @@ public class CropImage extends Activity {
 //		croppedImage.recycle();
 //		croppedImage = b;
 
-		Log.e("CROP", "Cropped: "+croppedImage.getWidth()+"x"+croppedImage.getHeight());
+		Log.i("CROP", "Cropped: "+croppedImage.getWidth()+"x"+croppedImage.getHeight() +", " +croppedImage.getRowBytes() * croppedImage.getHeight()+"bytes");
 		
 		
 		BitmapUtils.setUserBitmap(FlagWallpaperService.context, croppedImage);
 		setResult(RESULT_OK);
 		
+		croppedImage.recycle();
+		croppedImage =  null;
 		mBitmap.recycle();
 		mBitmap = null;
-	
+		System.gc();
 		finish();
 	}
 

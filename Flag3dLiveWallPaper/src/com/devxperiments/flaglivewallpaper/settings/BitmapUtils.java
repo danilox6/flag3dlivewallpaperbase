@@ -18,6 +18,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.Display;
 import android.widget.ImageView;
 
@@ -209,6 +210,7 @@ public class BitmapUtils {
 			while(twoPower(++nearerTwoPower)<=max);
 			bestFittingScreenPow = twoPower(nearerTwoPower);
 		}
+//		Log.i("Screen", "screen size "+width+"x"+heigth+", best fit: "+bestFittingScreenPow);
 		return bestFittingScreenPow;
 	}
 

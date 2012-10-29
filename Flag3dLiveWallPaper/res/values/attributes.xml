@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <declare-styleable name="GalleryStyle">
         <attr name="android:galleryItemBackground" />
     </declare-styleable>
 
-    <string-array name="pref_flag_image_entries">
+    <!-- string-array name="pref_flag_image_entries">
         <item>Single</item>
         <item>Multiple</item>
-    </string-array>
-    <string-array name="pref_flag_image_values">
+    </string-array-->
+    <!-- string-array name="pref_flag_image_values">
         <item>single_flag</item>
         <item>multi_flag</item>
-    </string-array>
-    <string-array name="pref_flag_mode_entries">
+    </string-array-->
+    <string-array name="pref_flag_mode_entries" tools:ignore="MissingTranslation">
         <item>Fullscreen</item>
         <item>Sky</item>
     </string-array>
-    <string-array name="pref_flag_mode_values">
+    <string-array name="pref_flag_mode_values" tools:ignore="MissingTranslation">
         <item>flag_fullscreen</item>
         <item>flag_sky</item>
     </string-array>

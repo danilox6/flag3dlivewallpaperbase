@@ -107,6 +107,7 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 				case PICKED_IMAGE:
 					Uri selectedImage = data.getData();
 					Intent intent = new Intent(this, CropImage.class);
+					Log.i("WallpaperChooser", "Picked image URI: "+selectedImage.toString());
 					intent.putExtra("image-path", selectedImage.toString());
 					intent.putExtra("orientation", true);
 					startActivityForResult(intent, CROPPED_IMAGE);
@@ -114,7 +115,6 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 
 				case CROPPED_IMAGE:
 					Bitmap bitmap = BitmapUtils.getUserBitmap(FlagWallpaperService.context);
-					Log.i(WallpaperChooser.class.getSimpleName(), bitmap==null?"null":bitmap.getHeight()+"");
 					imageView.setImageBitmap(bitmap);
 					break;
 				}
@@ -165,8 +165,6 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 			imageView.setOnClickListener(listener);
 
 		}else{
-			
-
 			imageView.setOnClickListener(null);
 			String selectedTexture = null;
 			if(!skyBackground){
