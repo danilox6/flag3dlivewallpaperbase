@@ -10,21 +10,27 @@
     <string name="strBtnFeedback">Send Feedback</string>
     <string name="strPickFromGallery">Tap to select a picture from gallery</string>
     <string name="strDragDrop" translate="false">Drag&amp;Drop</string>
+    <string name="strPicasaError">Couldn\'t download picture from Picasa. Is your network connection enabled?</string>
+    <string name="strCropping">Cropping picture&#8230;</string>
+    <string name="strLoading">Loading picture&#8230;</string>
+    <string name="strOpenPreview">Tap to open a fullscreen preview</string>
+    <string name="strClosePreview">Tap to close the preview</string>
     
-    
-    <string name="txtCredits" translate="false">Author: Danilo Iannelli\nFlag Graphic: Marco Magnetti\n
+    <string name="txtCredits" translate="false">Author: Danilo Iannelli\nGraphic designer: Marco Magnetti\n
  	    \n
+ 	Sky textures by Patrick Hoesly\n
+ 	\u00A0http://www.flickr.com/photos/zooboing/\n
+ 	\n
  	Used Libraries:\n
- 	- jPCT\n
+ 	- GLWallpaperService\n
+ 	\u00A0https://github.com/markfguerra/GLWallpaperService\n
+ 	- jPCT-AE\n
  	  \u00A0http://www.jpct.net\n
  	- jBrush\n
- 	\u00A0http://jbrusheditor.tumblr.com\n
- 	- GLWallpaperService\n
- 	\u00A0https://github.com/markfguerra/GLWallpaperService</string>
+ 	\u00A0http://jbrusheditor.tumblr.com</string>
     <string name="txtFeedback">Send us error reports, suggestions, feature requests or flag design ideas!</string>
     <string name="txtRestoreDefault">Are you sure you want to restore default settings?</string>
-  
-    
+  	
     <string name="prefFlagSettingCategory">Flag Settings</string>
     <string name="prefSelectFlagSng">Select a flag</string>
     <string name="prefSelectFlagPlr">Select flags</string>

@@ -18,7 +18,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.Display;
 import android.widget.ImageView;
 
@@ -79,6 +78,10 @@ public class BitmapUtils {
 //				userBitmap = bitmap;
 				if(bitmap!=null)
 					saveBitmap(context, bitmap);
+	}
+	
+	public static void deleteUserBitmap(Context context){
+		context.deleteFile("userBitmapFile");
 	}
 
 	public static void freeBitmaps(){

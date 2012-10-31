@@ -29,6 +29,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,8 +69,17 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 				}
 			};
 		}
-		else
+		else{
+			listener = new OnClickListener() {
+				public void onClick(View v) {
+					Intent intent = new Intent(WallpaperChooser.this, PreviewActivity.class);
+					intent.putExtra("flagId", (Integer) imageView.getTag());
+					startActivity(intent);
+				}
+			};
 			pics = FlagManager.getPortraitFlagIds();
+		}
+
 
 		txtInfo = (TextView) findViewById(R.id.txtImageInfo);
 
@@ -109,7 +119,6 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 					Intent intent = new Intent(this, CropImage.class);
 					Log.i("WallpaperChooser", "Picked image URI: "+selectedImage.toString());
 					intent.putExtra("image-path", selectedImage.toString());
-					intent.putExtra("orientation", true);
 					startActivityForResult(intent, CROPPED_IMAGE);
 					break;
 
@@ -124,7 +133,7 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 		}
 
 	}
-	
+
 	@Override
 	public void onClick(View v) {
 		if(((Button) v).equals(btnOk)){
@@ -135,7 +144,7 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 				texture = Settings.SKY_USER_BACKGROUND;
 			}else
 				texture = FlagManager.getFlagNameById(flagId);
-			
+
 			if(!skyBackground && !FlagWallpaperService.PRO && !(texture.startsWith(FlagManager.DEFAULT) || texture.startsWith(FlagManager.FREE))){
 				Toast.makeText(this, R.string.strOnlyInProVersion, Toast.LENGTH_LONG).show();
 				return;
@@ -144,11 +153,11 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 		}
 		finish();
 	}
-	
+
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		int flagId = pics.get(position);
-		
+
 		boolean portrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
 		if(skyBackground && flagId == R.drawable.sys_btn_add){
@@ -162,10 +171,14 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 			else
 				imageView.setImageBitmap(bitmap);
 
+			imageView.setScaleType(ScaleType.CENTER_INSIDE);
+			imageView.setBackgroundResource(android.R.color.transparent); 
 			imageView.setOnClickListener(listener);
+			txtInfo.setOnClickListener(listener);
 
 		}else{
-			imageView.setOnClickListener(null);
+			imageView.setBackgroundResource(R.drawable.sys_holo_border);
+			imageView.setScaleType(ScaleType.CENTER_CROP);
 			String selectedTexture = null;
 			if(!skyBackground){
 				selectedTexture = FlagManager.getFlagNameById(flagId);
@@ -173,12 +186,21 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 					flagId = FlagManager.toLandscape(flagId);
 			}
 			imageView.setImageResource(flagId);
-			if(!skyBackground && !FlagWallpaperService.PRO && !(selectedTexture.startsWith(FlagManager.DEFAULT) || selectedTexture.startsWith(FlagManager.FREE))){
-//				BitmapUtils.toGrayScale(imageView);
+			if(!skyBackground){
 				txtInfo.setVisibility(View.VISIBLE);
-				txtInfo.setText(R.string.strOnlyInProVersion);
-			}else
+				if(!FlagWallpaperService.PRO && !(selectedTexture.startsWith(FlagManager.DEFAULT) || selectedTexture.startsWith(FlagManager.FREE))){
+					//				BitmapUtils.toGrayScale(imageView);
+					txtInfo.setText(R.string.strOnlyInProVersion);
+				}else{
+					txtInfo.setText(R.string.strOpenPreview);
+					imageView.setOnClickListener(listener);
+					txtInfo.setOnClickListener(listener);
+				}
+			}else{
 				txtInfo.setVisibility(View.GONE);
+				txtInfo.setOnClickListener(null);
+				imageView.setOnClickListener(null);
+			}
 		}
 
 		imageView.setTag(flagId);
@@ -225,18 +247,24 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 			else
 				imageView = (ImageView) convertView;
 
+
 			if (thumbCache[position] == null){
 				Bitmap bitmap  = BitmapUtils.scaleCenterCrop(BitmapFactory.decodeResource(getResources(), pics.get(position)),thumbHeight,thumbHeight);
-				String texture = FlagManager.getFlagNameById(pics.get(position));
-				if(!skyBackground && !FlagWallpaperService.PRO && !(texture.startsWith(FlagManager.DEFAULT) || texture.startsWith(FlagManager.FREE)))
-					bitmap = BitmapUtils.toGrayScale(bitmap);
+				if(!skyBackground && !FlagWallpaperService.PRO){
+					String texture = FlagManager.getFlagNameById(pics.get(position));
+					if (!(texture.startsWith(FlagManager.DEFAULT) || texture.startsWith(FlagManager.FREE)))
+						bitmap = BitmapUtils.toGrayScale(bitmap);
+				}
 				thumbCache[position] = bitmap;
 			}
 			imageView.setImageBitmap(thumbCache[position]);
 			imageView.setAdjustViewBounds(true);
-//			imageView.setLayoutParams(new Gallery.LayoutParams(thumbHeight, thumbHeight));
-//			imageView.setBackgroundResource(imageBackground);
-			imageView.setBackgroundResource(R.drawable.sys_holo_border);
+			//			imageView.setLayoutParams(new Gallery.LayoutParams(thumbHeight, thumbHeight));
+			//			imageView.setBackgroundResource(imageBackground);
+			if(skyBackground && position == thumbCache.length-1)
+				imageView.setBackgroundResource(android.R.color.transparent); 
+			else
+				imageView.setBackgroundResource(R.drawable.sys_holo_border);
 			return imageView;
 		}
 

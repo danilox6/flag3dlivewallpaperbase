@@ -34,6 +34,8 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/prefSelectFlagSng" >
         </activity>
+        <activity android:name="com.devxperiments.flaglivewallpaper.settings.PreviewActivity" >
+        </activity>
         <activity
             android:name="com.droid4you.util.cropimage.CropImage"
             android:configChanges="orientation|keyboardHidden"

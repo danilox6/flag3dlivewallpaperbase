@@ -1,7 +1,5 @@
 package com.devxperiments.flaglivewallpaper;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,12 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import android.app.WallpaperManager;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -39,6 +33,10 @@ public class FlagManager {
 		defaultPackage = defPackage;
 		FlagIdsMap.init();
 //		Texture.defaultTo4bpp(true);
+//		PackageManager packageManager = FlagWallpaperService.context.getPackageManager();
+//		Intent levelsIntent = new Intent("com.your.package.name.LEVEL_PACK");
+//		List<ResolveInfo> levelPacks = packageManager.queryIntentActivities(levelsIntent, 0);
+//		packageManager.getResourcesForActivity(levelPacks.get(0).activityInfo);
 		Class resources = R.drawable.class;
 		Field[] fields = resources.getFields();
 		defaultFlag = fields[0].getName();
@@ -57,7 +55,7 @@ public class FlagManager {
 //			if (prefs.getBoolean(Settings.DAY_TIME_SKY_BACKGROUND, false)){
 //				backgroundToLoad = DayTimeAlarmManager.getAttualDayTimeString();
 //			}else{
-				backgroundToLoad = prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_day");
+				backgroundToLoad = prefs.getString(Settings.SKY_MODE_BACKGROUND_IMAGE, "sky_night");
 				if (backgroundToLoad.equals(Settings.SKY_USER_BACKGROUND))
 					loadBackground = false;
 //			}
@@ -127,8 +125,8 @@ public class FlagManager {
 				loadUserTexture();
 			else
 				loadTexture(textureName, FlagIdsMap.get(textureName));
-		}else
-			Log.i("FlagManager", textureName + " already loaded");
+		}else;
+//			Log.i("FlagManager", textureName + " already loaded");
 	}
 
 	private static void loadTexture(String textureName, Bitmap bitmap){
@@ -271,9 +269,9 @@ public class FlagManager {
 			return keys;
 		}
 		
-		public static void clear(){
-			flagIds.clear();
-			flagIds = null;
-		}
+//		public static void clear(){
+//			flagIds.clear();
+//			flagIds = null;
+//		}
 	}
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name" translate="false">Flag Live Wallpaper</string>
     <string name="description">Il Live Wallpaper della tua squadra del cuore!</string>
     <string name="crop_label">Ritaglia foto</string>
     <string name="settings_label">Impostazioni</string>
@@ -10,20 +9,15 @@
     <string name="strBtnFeedback">Invia Feedback</string>
     <string name="strPickFromGallery">Tocca per selezionare una immagine dalla galleria</string>
     <string name="strDragDrop" translate="false">Drag&amp;Drop</string>
+    <string name="strPicasaError">Impossibile scaricare l\'immagine da Picasa. Hai abilitato una connessione di rete?</string>
+    <string name="strCropping">Ritagliando l\'immagine&#8230;</string>
+    <string name="strLoading">Caricamento immagine&#8230;</string>
+    <string name="strOpenPreview">Tocca per aprire un\'anteprima a schermo intero</string>
+    <string name="strClosePreview">Tocca per chiudere l\'anteprima</string>
     
+    <string name="txtFeedback">Inviaci suggerimenti, segnaliazione errori, richieste di features o idee per nuove bandiere!</string>
+    <string name="txtRestoreDefault">Sei sicuro di voler ripristinare le impostazioni di default?</string>
     
-    <string name="txtCredits" translate="false">Author: Danilo Iannelli\nFlag Graphic: Marco Magnetti\n
- 	    \n
- 	Used Libraries:\n
- 	- jPCT\n
- 	  \u00A0http://www.jpct.net\n
- 	- jBrush\n
- 	\u00A0http://jbrusheditor.tumblr.com\n
- 	- GLWallpaperService\n
- 	\u00A0https://github.com/markfguerra/GLWallpaperService</string>
-    <string name="txtFeedback">Send us error reports, suggestions, feature requests or flag design ideas!</string>
-    <string name="txtRestoreDefault">Are you sure you want to restore default settings?</string>
-  
     
     <string name="prefFlagSettingCategory">Impostazioni bandiera</string>
     <string name="prefSelectFlagSng">Seleziona una bandiera</string>

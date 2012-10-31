@@ -28,8 +28,9 @@
             android:contentDescription="@string/strImageContent"
             android:layout_marginTop="5dp"
             android:cropToPadding="true"
-            android:background="@drawable/sys_holo_border"
             android:scaleType="centerCrop"
+            android:background="@drawable/sys_holo_border"
+           
              >
         </ImageView>
 

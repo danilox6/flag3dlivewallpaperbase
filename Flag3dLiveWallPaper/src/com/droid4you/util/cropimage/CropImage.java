@@ -19,13 +19,16 @@ package com.droid4you.util.cropimage;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 import com.devxperiments.flaglivewallpaper.FlagWallpaperService;
 import com.devxperiments.flaglivewallpaper.R;
 import com.devxperiments.flaglivewallpaper.settings.BitmapUtils;
 
 import android.app.Activity;
-import android.app.WallpaperManager;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -35,12 +38,14 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 
 
@@ -64,7 +69,6 @@ public class CropImage extends Activity {
 
 	private static Bitmap mBitmap;
 	HighlightView mCrop;
-	private boolean orientation;
 
 	private String mImagePath;
 
@@ -74,52 +78,8 @@ public class CropImage extends Activity {
 		mContentResolver = getContentResolver();
 
 		setContentView(R.layout.cropimage);
-
-		mImageView = (CropImageView) findViewById(R.id.image);
-//		mImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-		Intent intent = getIntent();
-		Bundle extras = intent.getExtras();
-		if (extras != null) {
-
-			mImagePath = extras.getString("image-path");
-			orientation = extras.getBoolean("orientation");
-
-			Display display = getWindowManager().getDefaultDisplay();
-
-			if(orientation){
-				if(display.getHeight()>display.getWidth()){
-					mAspectX = display.getWidth();
-					mAspectY = display.getHeight();
-				}
-				else{
-					mAspectY = display.getWidth();
-					mAspectX = display.getHeight();	
-				}
-			}else{
-				if(display.getHeight()<display.getWidth()){
-					mAspectX = display.getWidth();
-					mAspectY = display.getHeight();
-				}
-				else{
-					mAspectY = display.getWidth();
-					mAspectX = display.getHeight();	
-				}
-			}
-
-			mOutputX = mOutputY = BitmapUtils.getBestFittingScreenPow(display);
-			
-		}
-
-		if(orientation)
-			mBitmap = getBitmap(mImagePath);
-
-
-		if (mBitmap == null) {
-			finish();
-			return;
-		}
-
+		
+		
 		// Make UI fullscreen.
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -137,13 +97,108 @@ public class CropImage extends Activity {
 						onSaveClicked();
 					}
 				});
+
+		mImageView = (CropImageView) findViewById(R.id.image);
+//		mImageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+		Intent intent = getIntent();
+		Bundle extras = intent.getExtras();
+		if (extras != null) {
+
+			mImagePath = extras.getString("image-path");
+
+			Display display = getWindowManager().getDefaultDisplay();
+
+				if(display.getHeight()>display.getWidth()){
+					mAspectX = display.getWidth();
+					mAspectY = display.getHeight();
+				}
+				else{
+					mAspectY = display.getWidth();
+					mAspectX = display.getHeight();	
+				}
+
+			mOutputX = mOutputY = BitmapUtils.getBestFittingScreenPow(display);
+			
+		}
+
+		new AsyncTask<Void, Void, Bitmap>(){
+
+			private ProgressDialog dialog = new ProgressDialog(CropImage.this);;
+			
+		    protected void onPreExecute() {
+		        this.dialog.setMessage(getString(R.string.strLoading));
+		        this.dialog.show();
+		    }
+			
+			@Override
+			protected Bitmap doInBackground(Void... params) {
+				FutureTask<Bitmap> task = new FutureTask<Bitmap>(new Callable<Bitmap>() {
+					public Bitmap call() throws Exception {
+						return getBitmap(mImagePath);
+					}
+				});
+				
+				new Thread(task).start();             
+                
+                try{
+                     return task.get(7, TimeUnit.SECONDS);
+                }catch (Exception e){
+                	return null;
+                }
+			}
+			
+			protected void onPostExecute(Bitmap success) {
+			        if (dialog.isShowing()) {
+			            dialog.dismiss();
+			        }
+			        mBitmap = success;
+			        if (mBitmap == null) {
+			        	if(mImagePath.toString().contains("picasa"))
+			        		Toast.makeText(CropImage.this, R.string.strPicasaError, Toast.LENGTH_LONG).show();
+			        	finish();
+			        	return;
+			        }
+			        startFaceDetection();
+			  }
+		}.execute();
 		
-		startFaceDetection();
+
+		
+//		try {
+//			mBitmap =  task.get(10, TimeUnit.SECONDS);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			e.printStackTrace();
+//		} catch (TimeoutException e) {
+//			// TODO Auto-generated catch block
+//			Toast.makeText(this, R.string.txtPicasaError, Toast.LENGTH_LONG).show();
+//			finish();
+//			return;
+//		}
+		
+		
+		
+//		mBitmap = getBitmap(mImagePath);
+//
+//
+//		if (mBitmap == null) {
+//			if(mImagePath.toString().contains("picasa"))
+//				Toast.makeText(this, R.string.txtPicasaError, Toast.LENGTH_LONG).show();
+//			finish();
+//			return;
+//		}
+
+		
+		
 	}
 	//
 	//	private Uri getImageUri(String path) {
 	//		return Uri.fromFile(new File(path));
 	//	}
+
+	
 
 	private Bitmap getBitmap(String path, int maxSize) {
 
@@ -192,16 +247,38 @@ public class CropImage extends Activity {
 		return null;
 	}
 
-
 	private void startFaceDetection() {
 		if (isFinishing())
 			return;
 		mImageView.setImageBitmapResetBase(mBitmap, true);
 		mRunFaceDetection.run();
 	}
+	
+	
+	protected void onSaveClicked() {
+		new AsyncTask<Void, Void, Void>(){
+			private ProgressDialog dialog = new ProgressDialog(CropImage.this);;
+			
+		    protected void onPreExecute() {
+		    	this.dialog.setMessage(getString(R.string.strCropping));
+		        this.dialog.show();
+		    }
+
+			protected Void doInBackground(Void... params) {
+				startCropping();
+				return null;
+			}
+			
+			protected void onPostExecute(Void success) {
+		        if (dialog.isShowing()) {
+		            dialog.dismiss();
+		        }
+			}
+		}.execute();
+	}
 
 
-	private void onSaveClicked() {
+	private void startCropping() {
 		if (mSaving) return;
 
 		if (mCrop == null) {
