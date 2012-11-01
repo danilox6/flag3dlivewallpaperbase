@@ -12,17 +12,17 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
-public class AlhpaSliderPreference extends DialogPreference{
+public class AlphaSliderPreference extends DialogPreference{
 
-	private float DEFAULT_ALPHA = 4f;
+	public static float DEFAULT_ALPHA = 3f;
 	private SliderView slider;
 	private float value = DEFAULT_ALPHA;
 
-	public AlhpaSliderPreference(Context context, AttributeSet attrs) {
+	public AlphaSliderPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public AlhpaSliderPreference(Context context, AttributeSet attrs, int defStyle) {
+	public AlphaSliderPreference(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 

@@ -30,7 +30,7 @@
             android:summary="@string/prefBackgroundSummary"
             android:title="@string/prefBackground" />
 
-        <com.devxperiments.flaglivewallpaper.settings.AlhpaSliderPreference
+        <com.devxperiments.flaglivewallpaper.settings.AlphaSliderPreference
             android:key="alpha"
             android:persistent="true"
             android:summary="@string/prefTransparencySummary"

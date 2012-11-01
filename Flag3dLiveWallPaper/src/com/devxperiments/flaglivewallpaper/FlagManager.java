@@ -66,7 +66,7 @@ public class FlagManager {
 
 			if(!name.startsWith(SYSTEM_RES)){
 
-				if(name.startsWith(DEFAULT))
+				if(name.startsWith(DEFAULT) && !name.endsWith(LANDSCAPE))
 					defaultFlag = name;
 
 				int id = FlagWallpaperService.context.getResources().getIdentifier(name, "drawable", defPackage);

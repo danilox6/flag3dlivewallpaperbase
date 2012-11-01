@@ -15,8 +15,10 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Display;
 import android.widget.Toast;
 
+import com.devxperiments.flaglivewallpaper.settings.AlphaSliderPreference;
 import com.devxperiments.flaglivewallpaper.settings.BitmapUtils;
 import com.devxperiments.flaglivewallpaper.settings.Settings;
 import com.jbrush.ae.Animator;
@@ -56,8 +58,9 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		modePreferenceUpdated = false;
 		isSingleFlagSet = false;
 		userBackPrefUpdated = false;
-		width = height = 512;
-
+		
+		width = height = 512; //onSurfaceChanged lo cambierà
+		
 		com.threed.jpct.Logger.setLogLevel(com.threed.jpct.Logger.WARNING);
 		//		if(prefs.getBoolean(Settings.DAY_TIME_SKY_BACKGROUND, true) && !DayTimeAlarmManager.isRunning())
 		//			DayTimeAlarmManager.start(context);
@@ -108,7 +111,8 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 	public void onSurfaceChanged(GL10 gl, final int screenWidth, final int screenHeight) {
 		width = screenWidth;
 		height = screenHeight;
-
+		Log.i("Screen", "Screen size "+width+"x"+height+", best fit: "+BitmapUtils.getBestFittingScreenPow(width,height));
+		
 		if (framebuffer != null) 
 			framebuffer.dispose();
 
@@ -174,7 +178,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		}
 
 		if(prefs.getString(Settings.FLAG_MODE_SETTING, Settings.FLAG_MODE_FULLSCREEN).equals(Settings.FLAG_MODE_SKY)){
-			int transparency = 15 - Math.round(prefs.getFloat(Settings.ALPHA_SETTING, -1F));
+			int transparency = 15 - Math.round(prefs.getFloat(Settings.ALPHA_SETTING, AlphaSliderPreference.DEFAULT_ALPHA));
 			flag.setTransparency(transparency);
 			if(pole!=null)
 				pole.setTransparency(transparency);

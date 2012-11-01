@@ -213,7 +213,6 @@ public class BitmapUtils {
 			while(twoPower(++nearerTwoPower)<=max);
 			bestFittingScreenPow = twoPower(nearerTwoPower);
 		}
-//		Log.i("Screen", "screen size "+width+"x"+heigth+", best fit: "+bestFittingScreenPow);
 		return bestFittingScreenPow;
 	}
 
