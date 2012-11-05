@@ -248,16 +248,17 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 				imageView = (ImageView) convertView;
 
 
-			if (thumbCache[position] == null){
-				Bitmap bitmap  = BitmapUtils.scaleCenterCrop(BitmapFactory.decodeResource(getResources(), pics.get(position)),thumbHeight,thumbHeight);
-				if(!skyBackground && !FlagWallpaperService.PRO){
-					String texture = FlagManager.getFlagNameById(pics.get(position));
-					if (!(texture.startsWith(FlagManager.DEFAULT) || texture.startsWith(FlagManager.FREE)))
-						bitmap = BitmapUtils.toGrayScale(bitmap);
-				}
-				thumbCache[position] = bitmap;
-			}
-			imageView.setImageBitmap(thumbCache[position]);
+//			if (thumbCache[position] == null){
+//				Bitmap bitmap  = BitmapUtils.scaleCenterCrop(BitmapFactory.decodeResource(getResources(), pics.get(position)),thumbHeight,thumbHeight);
+//				if(!skyBackground && !FlagWallpaperService.PRO){
+//					String texture = FlagManager.getFlagNameById(pics.get(position));
+//					if (!(texture.startsWith(FlagManager.DEFAULT) || texture.startsWith(FlagManager.FREE)))
+//						bitmap = BitmapUtils.toGrayScale(bitmap);
+//				}
+//				thumbCache[position] = bitmap;
+//			}
+//			imageView.setImageBitmap(thumbCache[position]);
+			imageView.setImageResource(pics.get(position));
 			imageView.setAdjustViewBounds(true);
 			//			imageView.setLayoutParams(new Gallery.LayoutParams(thumbHeight, thumbHeight));
 			//			imageView.setBackgroundResource(imageBackground);

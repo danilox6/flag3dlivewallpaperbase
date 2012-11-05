@@ -27,7 +27,7 @@
         <activity
             android:name="com.devxperiments.flaglivewallpaper.settings.Settings"
             android:exported="true"
-            android:label="Setting" >
+            android:label="@string/settings_label" >
         </activity>
         <activity
             android:name="com.devxperiments.flaglivewallpaper.settings.WallpaperChooser"
