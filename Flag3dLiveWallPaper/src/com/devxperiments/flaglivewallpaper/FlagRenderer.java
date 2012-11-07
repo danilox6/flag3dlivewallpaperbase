@@ -219,9 +219,10 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 
 		
 		String flagModeSetting = prefs.getString(Settings.FLAG_MODE_SETTING, Settings.FLAG_MODE_FULLSCREEN);
-
+		String flagSpeedSetting = prefs.getString(Settings.FLAG_SPEED, "normal");
+		
 		AssetManager assetManager = FlagWallpaperService.context.getAssets();
-		objects = Scene.loadSerializedLevel(flagModeSetting+".txt", objects, lights, null,null, world, assetManager);
+		objects = Scene.loadSerializedLevel(flagModeSetting+"_"+flagSpeedSetting+".txt", objects, lights, null,null, world, assetManager);
 
 		flag = (Scene.findObject(flagModeSetting+"0", objects));
 		Animator.Play(flag, "wave", objects);
@@ -284,6 +285,9 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		else if(key.equals(Settings.FLAG_MODE_SETTING)){
 			modePreferenceUpdated = true;
 			imagePreferenceUpdated = true;
+		}
+		else if(key.equals(Settings.FLAG_SPEED)){
+			modePreferenceUpdated = true;
 		}
 		else if(key.equals(Settings.DAY_TIME_SKY_BACKGROUND) && prefs.getBoolean(key, true))
 			dayTimeUpdated = true;

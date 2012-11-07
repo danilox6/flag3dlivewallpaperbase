@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string-array name="pref_flag_speed_entries">
+        <item>Lenta</item>
+        <item>Normale</item>
+        <item>Veloce</item>
+    </string-array>
+
+</resources>

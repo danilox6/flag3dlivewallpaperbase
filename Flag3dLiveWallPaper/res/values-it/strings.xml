@@ -35,4 +35,6 @@
     <string name="prefCredits">Crediti</string>
     <string name="prefFeedback">Feedback &amp; suggerimenti</string>
     <string name="prefOnlySky">Disponibile solamente in modalità sky</string>
+    <string name="prefFlagSpeed">Velocità animazione</string>
+    <string name="prefFlagSpeedSummary">Imaposta la velocità dell\'animazione</string>
 </resources>

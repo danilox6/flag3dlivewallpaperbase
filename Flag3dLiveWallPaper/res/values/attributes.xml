@@ -21,6 +21,17 @@
         <item>flag_fullscreen</item>
         <item>flag_sky</item>
     </string-array>
+    
+    <string-array name="pref_flag_speed_entries">
+        <item>Slow</item>
+        <item>Normal</item>
+        <item>Fast</item>
+    </string-array>
+    <string-array name="pref_flag_speed_values" tools:ignore="MissingTranslation">
+        <item>slow</item>
+        <item>normal</item>
+        <item>fast</item>
+    </string-array>
 
     <declare-styleable name="SliderView">
         <attr name="multiplier" format="float" />

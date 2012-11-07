@@ -47,4 +47,6 @@
     <string name="prefCredits" translate="false">Credits</string>
     <string name="prefFeedback">Feedback &amp; suggestions</string>
     <string name="prefOnlySky">Only available in Sky Mode </string>
+    <string name="prefFlagSpeed">Animation speed</string>
+    <string name="prefFlagSpeedSummary">Set the animation speed</string>
 </resources>

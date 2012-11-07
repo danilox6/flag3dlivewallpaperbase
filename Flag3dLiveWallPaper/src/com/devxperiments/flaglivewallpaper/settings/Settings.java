@@ -35,6 +35,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 	public static final String SKY_MODE_BACKGROUND_IMAGE ="sky_image";
 	public static final String SKY_USER_BACKGROUND = "sys_sky_user";
 	public static final String DAY_TIME_SKY_BACKGROUND ="day_time_sky";
+	public static final String FLAG_SPEED = "flag_speed";
 
 	public static final String FLAG_IMAGE_SETTING = "flag_image_setting";
 	public static final String SINGLE_FLAG_IMAGE_SETTING = "single_flag";
@@ -45,6 +46,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 
 	public static final String FEEDBACK = "feedback";
 	public static final String CREDITS = "credits";
+	
 
 	private final int CREDITS_DIALOG = 0;
 	private final int FEEDBACK_DIALOG = 1;

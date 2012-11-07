@@ -35,6 +35,14 @@
             android:persistent="true"
             android:summary="@string/prefTransparencySummary"
             android:title="@string/prefTransparency" />
+        
+            <ListPreference
+            android:defaultValue="normal"
+            android:entries="@array/pref_flag_speed_entries"
+            android:entryValues="@array/pref_flag_speed_values"
+            android:key="flag_speed"
+            android:summary="@string/prefFlagSpeedSummary"
+            android:title="@string/prefFlagSpeed" />
     </PreferenceCategory>
     <!--PreferenceCategory android:title="Immagine Bandiera" >
         <ListPreference
