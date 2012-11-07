@@ -92,6 +92,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 //				clazz  = MultipleWallpaperChooser.class;
 //			}
 //			Intent intent = new Intent(this, clazz);
+			WallpaperChooser.clear();
 			Intent intent = new Intent(this, WallpaperChooser.class);
 			startActivity(intent);
 			return true;
@@ -102,6 +103,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceClickLis
 			this.showDialog(CREDITS_DIALOG);
 			return true;
 		}else if(key.equals(SKY_MODE_BACKGROUND_IMAGE)){
+			WallpaperChooser.clear();
 			Intent intent = new Intent(this, WallpaperChooser.class);
 			intent.putExtra(SKY_MODE_BACKGROUND_IMAGE, true);
 			startActivity(intent);

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.devxperiments.flaglivewallpaper.settings.AlphaSliderPreference;
 import com.devxperiments.flaglivewallpaper.settings.BitmapUtils;
 import com.devxperiments.flaglivewallpaper.settings.Settings;
+import com.devxperiments.flaglivewallpaper.settings.WallpaperChooser;
 import com.jbrush.ae.Animator;
 import com.jbrush.ae.EditorObject;
 import com.jbrush.ae.LightData;
@@ -98,6 +99,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 			}
 			world.renderScene(framebuffer);
 			Animator.EnableAnimations();
+			
 			world.draw(framebuffer);
 			framebuffer.display();
 		}catch(OutOfMemoryError e){
@@ -109,6 +111,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, final int screenWidth, final int screenHeight) {
+		WallpaperChooser.clear();
 		width = screenWidth;
 		height = screenHeight;
 		Log.i("Screen", "Screen size "+width+"x"+height+", best fit: "+BitmapUtils.getBestFittingScreenPow(width,height));
@@ -214,7 +217,7 @@ public class FlagRenderer implements GLWallpaperService.Renderer, OnSharedPrefer
 		Vector<EditorObject> objects = new Vector<EditorObject>();
 		Vector<LightData> lights = new Vector<LightData>();
 
-
+		
 		String flagModeSetting = prefs.getString(Settings.FLAG_MODE_SETTING, Settings.FLAG_MODE_FULLSCREEN);
 
 		AssetManager assetManager = FlagWallpaperService.context.getAssets();

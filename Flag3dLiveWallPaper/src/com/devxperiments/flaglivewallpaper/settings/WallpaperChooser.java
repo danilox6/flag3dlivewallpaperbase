@@ -41,7 +41,7 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 	private TextView txtInfo;
 	private SharedPreferences prefs;
 	private int thumbHeight;
-	private Bitmap[] thumbCache;
+	private static Bitmap[] thumbCache;
 	private boolean skyBackground;
 	private OnClickListener listener = null;
 	private final int PICKED_IMAGE = 1;
@@ -80,7 +80,6 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 			pics = FlagManager.getPortraitFlagIds();
 		}
 
-
 		txtInfo = (TextView) findViewById(R.id.txtImageInfo);
 
 		Gallery gallery = (Gallery) findViewById(R.id.gallery);
@@ -105,7 +104,6 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 
 		Display display = getWindowManager().getDefaultDisplay();
 		thumbHeight = (display.getHeight()*30/100) - 20;
-
 	}
 
 	@Override
@@ -151,11 +149,34 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 			}
 			prefs.edit().putString(skyBackground?Settings.SKY_MODE_BACKGROUND_IMAGE : Settings.SINGLE_FLAG_IMAGE_SETTING, texture).commit();
 		}
+
+
+		//		for(Bitmap b: thumbCache)
+		//			if(b!=null){
+		//				b.recycle();
+		//				b=null;
+		//			}
 		finish();
+	}
+
+
+
+	public static void clear(){
+		if(thumbCache!=null){
+			for(int i = 0; i<thumbCache.length; i++){
+				if(thumbCache[i] != null){
+					thumbCache[i].recycle();
+					thumbCache[i] = null;
+				}
+			}
+			thumbCache = null;
+		}
+		System.gc();
 	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
 		int flagId = pics.get(position);
 
 		boolean portrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
@@ -202,14 +223,11 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 				imageView.setOnClickListener(null);
 			}
 		}
-
 		imageView.setTag(flagId);
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {}
-
-
 
 	public class FlagAdapter extends BaseAdapter {
 
@@ -246,19 +264,18 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 				imageView = new ImageView(context);
 			else
 				imageView = (ImageView) convertView;
+			if (thumbCache[position] == null){
+				Bitmap bitmap  = BitmapUtils.scaleCenterCrop(BitmapFactory.decodeResource(getResources(), pics.get(position)),thumbHeight,thumbHeight);
+				if(!skyBackground && !FlagWallpaperService.PRO){
+					String texture = FlagManager.getFlagNameById(pics.get(position));
+					if (!(texture.startsWith(FlagManager.DEFAULT) || texture.startsWith(FlagManager.FREE)))
+						bitmap = BitmapUtils.toGrayScale(bitmap);
+				}
+				thumbCache[position] = bitmap;
+			}
 
-
-//			if (thumbCache[position] == null){
-//				Bitmap bitmap  = BitmapUtils.scaleCenterCrop(BitmapFactory.decodeResource(getResources(), pics.get(position)),thumbHeight,thumbHeight);
-//				if(!skyBackground && !FlagWallpaperService.PRO){
-//					String texture = FlagManager.getFlagNameById(pics.get(position));
-//					if (!(texture.startsWith(FlagManager.DEFAULT) || texture.startsWith(FlagManager.FREE)))
-//						bitmap = BitmapUtils.toGrayScale(bitmap);
-//				}
-//				thumbCache[position] = bitmap;
-//			}
-//			imageView.setImageBitmap(thumbCache[position]);
-			imageView.setImageResource(pics.get(position));
+			imageView.setImageBitmap(thumbCache[position]);
+			//			imageView.setImageResource(pics.get(position));
 			imageView.setAdjustViewBounds(true);
 			//			imageView.setLayoutParams(new Gallery.LayoutParams(thumbHeight, thumbHeight));
 			//			imageView.setBackgroundResource(imageBackground);
@@ -268,8 +285,5 @@ public class WallpaperChooser extends Activity implements OnClickListener, OnIte
 				imageView.setBackgroundResource(R.drawable.sys_holo_border);
 			return imageView;
 		}
-
 	}
-
-
 }

@@ -133,7 +133,7 @@ public class FlagManager {
 		if(!TextureManager.getInstance().containsTexture(textureName)){
 			Log.i("FlagManager", "Loading texture: "+textureName +" "+bitmap.getHeight()+"x"+bitmap.getWidth()+ ", "+bitmap.getRowBytes()*bitmap.getHeight()+"bytes");
 			Texture texture = new Texture(bitmap,true);
-			if(!textureName.equals(Settings.SKY_USER_BACKGROUND))
+//			if(!textureName.equals(Settings.SKY_USER_BACKGROUND))
 				texture.compress();
 			TextureManager.getInstance().addTexture(textureName, texture);
 			bitmap.recycle();

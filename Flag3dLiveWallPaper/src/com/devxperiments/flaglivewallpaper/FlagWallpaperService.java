@@ -54,6 +54,7 @@ public class FlagWallpaperService extends GLWallpaperService {
 			}
 //			DayTimeAlarmManager.stop();
 			renderer = null;
+//			android.os.Process.killProcess(android.os.Process.myPid());
 		}
 		
 		
